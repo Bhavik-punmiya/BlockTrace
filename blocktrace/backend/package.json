@@ -5,6 +5,14 @@
     "dotenv": "^16.3.1",
     "ethers": "^6.9.0",
     "express": "^4.18.2",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "braintree": "^3.19.0",
+    "cors": "^2.8.5",
+    "express-formidable": "^1.2.0",
+    "file-uri-to-path": "^2.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.0.3",
     "fernet": "^0.4.0",
     "fs": "^0.0.1-security"
   }
