@@ -4,7 +4,9 @@
       "ProductName": "Example Product",
       "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       "Category": "Electronics",
+      "Quantity": 100,
       "ManufacturingDate": "2024-01-17",
+      "ExpiryDate": "2025-01-17",
       "Manufacturer": {
         "ManufacturerName": "Example Manufacturer",
         "ManufacturerContact": "manufacturer@example.com"
@@ -24,7 +26,8 @@
       "LogisticsDetails": {
         "LogisticsCompany": "Logistics Express",
         "ContactInformation": "logistics@example.com"
-      }
+      },
+      "EstimatedArrivalTime": "2024-01-22 15:00:00"
     },
     "HistoryOfLocation": {
       "TrackingID": "ABC123",
@@ -32,7 +35,11 @@
         {"Location": "Manufacturer Warehouse", "Timestamp": "2024-01-18 12:00:00"},
         {"Location": "Distribution Center", "Timestamp": "2024-01-18 18:00:00"},
         {"Location": "Warehouse A", "Timestamp": "2024-01-20 10:30:00"}
-      ]    
+      ],
+      "LogisticsDetails": {
+        "LogisticsCompany": "Logistics Express",
+        "ContactInformation": "logistics@example.com"
+      }
     },
     "Consumer": {
       "Name": "John Doe",
@@ -43,7 +50,8 @@
         "Quantity": 2,
         "OrderDate": "2024-01-15"
       },
-      "DeliveryStatus": "Delivered"
+      "DeliveryStatus": "Delivered",
+      "FeedbackRating": 4.5
     }
   }
   
