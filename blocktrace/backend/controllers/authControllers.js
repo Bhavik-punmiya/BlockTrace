@@ -1,5 +1,7 @@
 
+const secretkey = require("../encryption/generateKey.js");
 const { comparepassword, hashpassword }= require("../helpers/authhelper.js");
+const keyschema = require("../models/keyschema.js");
 const userschema = require("../models/userschema.js");
 const JWT =  require("jsonwebtoken");
 require('dotenv').config();
@@ -26,12 +28,18 @@ const registerController = async (req,res)=>{
             return res.send({ success:false,message:"Already Existing User, Please Login "});
          }
         const hashedpassword = await hashpassword(password)
-
+        const key = await secretkey();
          const user = new userschema({
             name,
             email,
             password:hashedpassword,
-            role
+            role,
+            key
+         }).save();
+         const keys = new keyschema({
+            email,
+            role,
+            key
          }).save();
 
          res.status(201).send({
@@ -104,7 +112,34 @@ const loginController= async (req,res)=>{
    }
 
  }
+ const keyController= async (req,res)=>{
+
+   try{
+      
+      const keys = await keyschema.find();
+      
+       res.status(200).send({
+         success:true,
+         message:"Keys fetched Successfully",
+         keys
+        
+       })
+       
+   }
+   catch(err){
+      console.log(err)
+      res.status(500).send({
+        
+         success:false,
+         message:"ERROR IN keys fetching"
+      });
+
+   }
+
+ }
+
  module.exports = {
    registerController,
-   loginController
+   loginController,
+   keyController
 };

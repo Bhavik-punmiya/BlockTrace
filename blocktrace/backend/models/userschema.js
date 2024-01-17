@@ -16,7 +16,11 @@ const userschema = new mongoose.Schema({
         required:true,
     },
     role:{
-        type:Number
+        type:String,
+    },
+    key:{
+        type:String,
+        required:true,
     },
     createdAt: {
         type: Date,
