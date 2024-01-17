@@ -9,6 +9,8 @@ import { useState } from "react"
 
 function Distributor() {
     const [state, setState] = useState(false)
+    const [dash,setDash]=useState(false);
+    const [stats,setStats]=useState(true)
 
     // Replace javascript:void(0) paths with your paths
    
@@ -49,25 +51,29 @@ function Distributor() {
         </div>
         <nav className="border-b ">
             <ul className="flex items-center gap-x-3 max-w-screen-xl mx-auto px-4 overflow-x-auto lg:px-8 bg-white">
-                {
-                    submenuNav.map((item, idx) => {
-                        return (
-                            // Replace [idx == 0] with [window.location.pathname == item.path]
-                            <li key={idx} className={`py-1 ${idx == 0 ? "border-b-2 border-indigo-600" : ""}`}>
+                
+                    
+                            
+                            <li className={`py-1 ${(dash)? "border-b-2 border-indigo-600" : ""}`} onClick={()=>(setDash(false),setStats(true))}>
                                 <p className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150">
-                                    {item.title}
+                                Statistics
                                 </p>
                             </li>
-                        )
-                    })
-                }
+                             <li className={`py-1 ${(stats)? "border-b-2 border-indigo-600" : ""}`} onClick={()=>(setDash(true),setStats(false))}>
+                             <p className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150">
+                                Dashbroad
+                             </p>
+                         </li>
+                        
+                    
+                
             </ul>
         </nav>
     </header>
 
      <div className=' m-auto'>
-      <Dtable/>
-      {/* <Mcharts/> */}
+     {dash && <Dtable/>}
+   { stats && <Mcharts/>} 
      </div>
 
 
