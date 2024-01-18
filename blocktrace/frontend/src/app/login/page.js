@@ -9,11 +9,13 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
 
-
+import { useAuth } from '../context/auth'
 
 function page() {
   const[email,setEmail]=useState('');
   const[password,setPassword]=useState('');
+  const[auth,setAuth]=useAuth()
+  
   const navigate = useRouter();;
   const handleSubmit=async()=>{
     try{
@@ -24,10 +26,12 @@ function page() {
    const res = await axios.post("http://localhost:8080/v1/auth/login",body);
    console.log(res);
     if(res.data.success){
-      navigate.push(`/${res.data.user.role}`);
+      
       toast.success(res.data.message);
       setAuth({...auth,user:res.data.user})
+      console.log(auth);
       localStorage.setItem("auth",JSON.stringify(res.data));
+      navigate.push(`/${res.data.user.role}`);
     }
     else{
       toast.error(res.data.message);
@@ -36,6 +40,7 @@ function page() {
     }catch(err){
      console.log("Login data can't be send to api",err)
     }
+    
   }
   return (
     <div>

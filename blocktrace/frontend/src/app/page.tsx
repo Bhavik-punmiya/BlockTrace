@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation.js'
 export default function Home() {
        const [state, setState] = useState(false)
        const[auth,setAuth]=useAuth()
- const userdetail=localStorage.getItem('auth');
+
  const navigate=useRouter()
 
        // Replace javascript:void(0) paths with your paths

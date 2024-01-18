@@ -113,6 +113,37 @@ const loginController= async (req,res)=>{
    }
 
  }
+
+ const generateproductController = async (req,res)=>{
+   try{
+
+        const key = await secretkey();
+         const keys = await new keyschema({
+            key
+         }).save();
+  console.log(keys);
+         res.status(201).send({
+            success:true,
+            message:"Product Key Generated Successfully",
+            keys:keys,
+         })
+   }
+   catch(error){
+    console.log(error)
+    res.status(500).send({
+        success: false,
+        message:"Error in product Key generation",
+        error
+    })
+
+   }
+}
+
+
+
+
+
+
  const keyController= async (req,res)=>{
 
    try{
@@ -142,5 +173,7 @@ const loginController= async (req,res)=>{
  module.exports = {
    registerController,
    loginController,
-   keyController
+   keyController,
+   generateproductController
+
 };
