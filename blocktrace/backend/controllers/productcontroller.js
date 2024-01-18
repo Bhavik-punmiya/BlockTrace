@@ -1,7 +1,7 @@
 // controllers/productController.js
 
 const fs = require('fs');
-const { addproductdetails, getproductdetails, addManufacturerDashboardController, getManufacturerDashboardController,} = require('../main.js');
+const { addproductdetails, getproductdetails, addManufacturerDashboard, getManufacturerUserDashboard } = require('../main.js');
 
 const addProductDetailsController = async (req, res) => {
     try {
@@ -62,5 +62,5 @@ module.exports = {
     addProductDetailsController,
     getProductDetailsController,
     addManufacturerDashboardController,
-  getManufacturerDashboardController
+    getManufacturerDashboardController
 };
