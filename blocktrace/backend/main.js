@@ -38,13 +38,15 @@ const getproductdetails = async (productId) => {
     console.error('Error decrypting and saving user details:', error);
   }
 };
+
 const productId = "69b84bd8e2b9d504c6eaed6e0eb3027c";
 // const ipfs = 'QmSztkBBdpZik9wWyrTtBmaLCcvVPMtcksm4cJ3JiT6krN'
-// getproductdetails(productId);
+getproductdetails(productId);
 const decryptFiles = async () =>  {
   await decryptFile(`${productId}.txt`, secretKey, `${productId}.json`);
 
 }
+
 
 // decryptFiles()
 // addproductdetails(productId);
