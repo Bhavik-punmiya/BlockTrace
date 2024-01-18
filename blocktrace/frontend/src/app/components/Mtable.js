@@ -56,22 +56,32 @@ export default () => {
 try{
  const res =await axios.get("http://localhost:8080/v1/auth/generateproduct");
 console.log(res.data)
- const body= {
-    Product: {
+ let body= {
+"productID":res.data.keys._id,
+ "jsonData": {Product: {
       ProductID: res.data.keys._id,
       ProductName: name,
       Description: description,
-      ManufacturingDate:res.data.keys.createdAt,
+      
       Manufacturer: {
           ManufacturerName: auth.user.name,
           ManufacturerEmail: auth.user.email
       },
       Distribution: {
         Distributoremail: distributor,
+    },
+    timeline:{
+      
+    }
+      
     }
    }
- }  
+ }
+ const timelineKey = new Date().toISOString(); // Example: using ISO string as a key
+ body.jsonData.Product.timeline['manufacturer'] = timelineKey;
+ const addproduct =await axios.post("http://localhost:8080/api/addproductdetails",body);  
  console.log(body)
+
  const dash = await axios.post("http://localhost:8080/api/addmanufacturerdashboard",{
     "Id" : auth.user.id,
     "dashboardData" : [name,res.data.keys._id,res.data.keys.createdAt,price,distributor]
@@ -82,7 +92,7 @@ const did=await axios.post("http://localhost:8080/v1/auth/getkeyofuser",{"email"
 
 const distdash = await axios.post("http://localhost:8080/api/adddistributordashboard",{
     "Id":did.data.user.id,
-    "dashboardData" : [name,res.data.keys._id,res.data.keys.createdAt,price,distributor,1]
+    "dashboardData" : [name,res.data.keys._id,res.data.keys.createdAt,price]
 })
  
  toast.success("Product Added Successfully") ;

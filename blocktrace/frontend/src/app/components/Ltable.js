@@ -1,9 +1,10 @@
-'use client'
+
 
 import * as Dialog from "@radix-ui/react-dialog";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from '../context/auth'
+import {QRCodeSVG} from 'qrcode.react';
 import toast, { Toaster } from "react-hot-toast";
 
 
@@ -12,48 +13,83 @@ import toast, { Toaster } from "react-hot-toast";
 
 
 export default () => {
-    const[customer,setCustomer]=useState('')
-    const[customeradd,setCustomeradd]=useState('')
-    const[logistic,setLogistic]=useState('')
     const[location,setLocation]=useState(null)
     const[auth]=useAuth()
-    const tableItems = [
-        {
-            name: "Solo learn app",
-            date: "Oct 9, 2023",
-            status: "Active",
-            price: "$35.000",
-            plan: "Monthly subscription"
-        },
-        {
-            name: "Window wrapper",
-            date: "Oct 12, 2023",
-            status: "Active",
-            price: "$12.000",
-            plan: "Monthly subscription"
-        },
-        {
-            name: "Unity loroin",
-            date: "Oct 22, 2023",
-            status: "Archived",
-            price: "$20.000",
-            plan: "Annually subscription"
-        },
-        {
-            name: "Background remover",
-            date: "Jan 5, 2023",
-            status: "Active",
-            price: "$5.000",
-            plan: "Monthly subscription"
-        },
-        {
-            name: "Colon tiger",
-            date: "Jan 6, 2023",
-            status: "Active",
-            price: "$9.000",
-            plan: "Annually subscription"
-        },
-    ]
+    const[modaldata,setModaldata]=useState();
+    const[tabledata,setTabledata]=useState();
+
+    // const tableItems = [
+    //     {
+    //         name: "Solo learn app",
+    //         date: "Oct 9, 2023",
+    //         status: "Active",
+    //         price: "$35.000",
+    //         plan: "Monthly subscription"
+    //     },
+    //     {
+    //         name: "Window wrapper",
+    //         date: "Oct 12, 2023",
+    //         status: "Active",
+    //         price: "$12.000",
+    //         plan: "Monthly subscription"
+    //     },
+    //     {
+    //         name: "Unity loroin",
+    //         date: "Oct 22, 2023",
+    //         status: "Archived",
+    //         price: "$20.000",
+    //         plan: "Annually subscription"
+    //     },
+    //     {
+    //         name: "Background remover",
+    //         date: "Jan 5, 2023",
+    //         status: "Active",
+    //         price: "$5.000",
+    //         plan: "Monthly subscription"
+    //     },
+    //     {
+    //         name: "Colon tiger",
+    //         date: "Jan 6, 2023",
+    //         status: "Active",
+    //         price: "$9.000",
+    //         plan: "Annually subscription"
+    //     },
+    // ]
+
+   const handleCheckin= async (productid)=>{
+   try{ let getpro = await axios.post("http://localhost:8080/api/getproductdetails",
+    {  
+        "productID" : productid
+          
+       });
+        // const currentDate = new Date().toDateString();
+        getpro.data.Product.timeline['logistics'] = location;
+        const body = getpro.data;
+        const addproduct =await axios.post("http://localhost:8080/api/addproductdetails",{"productID" : productid ,"jsonData":body});
+        console.log(body)
+        toast.success("Successfully Check In")
+      }
+      catch(err){
+        toast.error("error");
+      }
+
+   }
+
+
+
+
+    const fetchapi= async()=>{
+      const res = await axios.post("http://localhost:8080/api/getlogisticsdashboard",{
+          "Id" : auth.user.id
+      })
+      console.log(res)
+      setTabledata(res.data)
+  }
+  
+  useEffect(()=>{
+    
+   fetchapi();
+  },[auth])
   
 
     useEffect(() => {
@@ -107,27 +143,32 @@ export default () => {
                         </tr>
                     </thead>
                     <tbody className="text-gray-600 divide-y">
-                        {
-                            tableItems.map((item, idx) => (
+                       
+                    {
+                            tabledata && tabledata.map((item, idx) => (
                                 <tr key={idx}>
-                                    <td className="pr-6 py-4 whitespace-nowrap">{item.name}</td>
-                                    <td className="pr-6 py-4 whitespace-nowrap">{item.date}</td>
-                                    <td className="pr-6 py-4 whitespace-nowrap">
-                                        <span className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status == "Active" ? "text-green-600 bg-green-50" : "text-blue-600 bg-blue-50"}`}>
-                                            {item.status}
-                                        </span>
-                                    </td>
-                                    <td className="pr-6 py-4 whitespace-nowrap">{item.plan}</td>
-                                    <td className="pr-6 py-4 whitespace-nowrap">{item.price}</td>
-                                    <td className="text-right whitespace-nowrap">
-                                      <Dialog.Trigger>  <button  className="py-1.5 px-3 text-white hover:text-gray-500 duration-150 hover: bg-blue-400 border rounded-lg">
+                                  {item.map((value, index) => (
+                                    <td key={index} className="pr-6 py-4 whitespace-nowrap">{value}</td>
+                                  ))}
+                                  {/* Uncomment and adjust the following if you have specific fields in your items */}
+                                  {/* <td className="pr-6 py-4 whitespace-nowrap">{item.date}</td>
+                                  <td className="pr-6 py-4 whitespace-nowrap">
+                                    <span className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status === "Active" ? "text-green-600 bg-green-50" : "text-blue-600 bg-blue-50"}`}>
+                                      {item.status}
+                                    </span>
+                                  </td>
+                                  <td className="pr-6 py-4 whitespace-nowrap">{item.plan}</td>
+                                  <td className="pr-6 py-4 whitespace-nowrap">{item.price}</td> */}
+                                  <td className="text-right whitespace-nowrap"> 
+                                  <Dialog.Trigger>  <button onClick={()=>(setModaldata(item))} className="py-1.5 px-3 text-white hover:text-gray-500 duration-150 hover: bg-blue-400 border rounded-lg">
                                             Check In
                                         </button>
                                         </Dialog.Trigger>
-                                    </td>
+                                  </td>
                                 </tr>
-                            ))
+                              ))
                         }
+                       
                     </tbody>
                 </table>
                 <Dialog.Portal>
@@ -140,10 +181,10 @@ export default () => {
             </Dialog.Title>
             <Dialog.Description className="mt-1 text-sm leading-relaxed text-center text-gray-500 flex flex-col justify-center items-start">
             <div className="flex flex-col items-start w-full mt-2">
-              <label className='font-medium'>Product Name</label>
+              <label className='font-medium'>Customer Email</label>
               <input
                 type='text'
-                placeholder="Name"
+                placeholder={modaldata && modaldata[0]}
                 className='w-full mt-1 focus:border-blue-600 px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150 cursor-not-allowed'
               />
             </div>
@@ -151,7 +192,7 @@ export default () => {
               <label className='font-medium'>Product Id</label>
               <input
                 type='text'
-                placeholder="Product Id"
+                placeholder={modaldata && modaldata[1]}
                 className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150 cursor-not-allowed'
               />
             </div>
@@ -165,6 +206,9 @@ export default () => {
                 className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150 cursor-not-allowed'
               />
             </div>
+           {modaldata && <div className=' w-full m-auto '>
+            <QRCodeSVG value={modaldata&&modaldata[1]} className='m-auto' />
+            </div> }
      
          
             {/* <div className="flex flex-col items-start w-full mt-2">
@@ -183,9 +227,9 @@ export default () => {
             </Dialog.Description>
             <div className="items-center gap-2 mt-3 text-sm sm:flex">
             <Dialog.Close>
-                <button className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2">
-                  Shipment
-                </button>
+              { modaldata && <button onClick={()=>(handleCheckin(modaldata[1]))}className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2">
+                  Check In
+                </button>}
                 </Dialog.Close>
              
             </div>

@@ -6,10 +6,11 @@ import Footer from '../components/Footer.js'
 import Ltable from '../components/Ltable.js'
 import Mcharts from '../components/Mcharts.js'
 import { useState } from "react"
+import { useAuth } from '../context/auth.js'
 
 function Distributor() {
     const [state, setState] = useState(false)
-
+    const [auth]= useAuth();
     // Replace javascript:void(0) paths with your paths
    
     

@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import Footer from '../components/Footer'
+import Footer from '../../components/Footer'
 import { useState } from "react"
 import {QRCodeSVG} from 'qrcode.react';
 import axios from 'axios';
+import { useParams } from 'next/navigation'
 
 function page() {
     const[productd,setProductd]=useState('');
@@ -12,11 +13,14 @@ function page() {
         stepsItems: ["Manfracturer", "Distributor", "Logistic", "Consumer"],
         currentStep: 2
     })
+
+
+    const params = useParams();
     const [state, setState] = useState(false)
    const fetchapi=async ()=>{
     const res = await axios.post("http://localhost:8080/api/getproductdetails",
     {  
-        "productID" : "69b84bd8e2b9d504c6eaed6e0eb3027c"
+        "productID" : params.id
           
        });
     console.log(res.data)
