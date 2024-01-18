@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const cors =require("cors");
 const authRoute = require('./routes/authRoute.js');
 const connectDB=require('./config/db.js');
-const { addproductdetails, getUserDetails} = require('./main.js');
+const { addproductdetails, getproductdetails} = require('./main.js');
 const fs = require('fs');
 dotenv.config();
 
@@ -44,14 +44,14 @@ app.post('/api/addproductdetails', async (req, res) => {
 });
 
 // Endpoint to get user details
-app.post('/api/get-user-details', async (req, res) => {
+app.post('/api/getproductdetails', async (req, res) => {
   try {
-    const { userID } = req.body;
+    const { productID} = req.body;
 
     // Call your function to get user details
-    const userDetails = await getUserDetails(userID);
-
-    res.json({ userDetails });
+    const  product = await getproductdetails(productID);
+    const productjsondata = JSON.parse(product);  
+    res.json(productjsondata);
   } catch (error) {
     console.error('Error getting user details:', error);
     res.status(500).json({ error: 'Internal server error' });
