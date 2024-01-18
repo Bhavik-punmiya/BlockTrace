@@ -1,6 +1,15 @@
 import * as Dialog from "@radix-ui/react-dialog";
+import axios from "axios";
+import { useState } from "react";
+import { useAuth } from '../context/auth'
+import toast, { Toaster } from "react-hot-toast";
 
 export default () => {
+    const[name,setName]=useState('')
+    const[price,setPrice]=useState('')
+    const[description,setDescription]=useState('')
+    const[distributor,setDistributor]=useState('')
+    const[auth]=useAuth()
 
     const tableItems = [
         {
@@ -40,10 +49,40 @@ export default () => {
         },
     ]
 
+ const handleaddproduct =async  ()=>{
+     
+try{const res =await axios.get("http://localhost:8080/v1/auth/generateproduct");
+console.log(res.data)
+  const body= {
+    Product: {
+      ProductID: res.data.keys._id,
+      ProductName: name,
+      Description: description,
+      "ManufacturingDate": "2024-01-17",
+      "Manufacturer": {
+          ManufacturerName: auth.user.name,
+          ManufacturerEmail: auth.user.email
+      },
+      Distribution: {
+        Distributoremail: distributor,
+    }
+   }
+ }   
+ console.log(body)
+ toast.success("Product Added Successfully") ;
+}
+
+ catch(err){
+  console.log(err);
+  toast.error("Unable Added Product");
+ }
+}
 
     return (
-
+<>
+     <Toaster/>
         <div className="max-w-screen-xl mx-auto px-4 md:px-8 bg-white py-20">
+
             <Dialog.Root>
             <div className="items-start justify-between md:flex bg-white">
                 <div className="max-w-lg">
@@ -114,50 +153,79 @@ export default () => {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
         <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-lg mx-auto px-4">
-          <div className="bg-white rounded-md shadow-lg px-4 py-6">
-            <div className=" flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 text-green-600"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
+          <div className="bg-white rounded-md shadow-lg px-10 py-6">
+             
             <Dialog.Title className="text-lg font-medium text-gray-800 text-center mt-3">
-              {" "}
-              Successfully accepted!
+              Add Product
             </Dialog.Title>
-            <Dialog.Description className="mt-1 text-sm leading-relaxed text-center text-gray-500">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Nunc
-              eget lorem dolor sed viverra ipsum nunc. Consequat id porta nibh
-              venenatis.
+            <Dialog.Description className="mt-1 text-sm leading-relaxed text-center text-gray-500 flex flex-col justify-center items-start">
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Name</label>
+              <input
+                type='text'
+                value={name}
+                onChange={(e)=>setName(e.target.value)} 
+                required
+                className='w-full mt-1 focus:border-blue-600 px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
+              />
+            </div>
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Price</label>
+              <input
+                type='text'
+                
+                onChange={(e)=>setPrice(e.target.value)} 
+                required
+                className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
+              />
+            </div>
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Description</label>
+              <input
+                type='text'
+                
+                onChange={(e)=>setDescription(e.target.value)} 
+                required
+                className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
+              />
+            </div>
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Distributor Email</label>
+              <input
+                type='email'
+                
+                onChange={(e)=>setDistributor(e.target.value)} 
+                required
+                className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
+              />
+            </div>
+            {/* <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Product Image</label>
+                       <div className="max-w-md h-40 rounded-lg border-2 border-dashed flex items-center justify-center">
+                     <label htmlFor="file" className="cursor-pointer text-center p-4 md:p-8">
+                         <svg className="w-10 h-10 mx-auto" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M12.1667 26.6667C8.48477 26.6667 5.5 23.6819 5.5 20C5.5 16.8216 7.72428 14.1627 10.7012 13.4949C10.5695 12.9066 10.5 12.2947 10.5 11.6667C10.5 7.0643 14.231 3.33334 18.8333 3.33334C22.8655 3.33334 26.2288 6.19709 27.0003 10.0016C27.0556 10.0006 27.1111 10 27.1667 10C31.769 10 35.5 13.731 35.5 18.3333C35.5 22.3649 32.6371 25.7279 28.8333 26.5M25.5 21.6667L20.5 16.6667M20.5 16.6667L15.5 21.6667M20.5 16.6667L20.5 36.6667" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                         </svg>
+                         <p className="mt-3 text-gray-700 max-w-xs mx-auto">Click to <span className="font-medium text-indigo-600">Upload your  file</span> or drag and drop your file here</p>
+                     </label>
+                     <input id="file" type="file" className="hidden" />
+                  </div>
+            </div>
+  */}
             </Dialog.Description>
             <div className="items-center gap-2 mt-3 text-sm sm:flex">
-              <Dialog.Close asChild>
-                <button className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2">
-                  Dashboard
+            <Dialog.Close>
+                <button className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2" onClick={handleaddproduct}>
+                  Add Product
                 </button>
-              </Dialog.Close>
-              <Dialog.Close asChild>
-                <button
-                  className="w-full mt-2 p-2.5 flex-1 text-gray-800 rounded-md outline-none border ring-offset-2 ring-indigo-600 focus:ring-2"
-                  aria-label="Close"
-                >
-                  Undo
-                </button>
-              </Dialog.Close>
+                </Dialog.Close>
+             
             </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
         </div>
+        </>
     )
 }

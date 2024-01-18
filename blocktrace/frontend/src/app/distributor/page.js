@@ -54,12 +54,12 @@ function Distributor() {
                 
                     
                             
-                            <li className={`py-1 ${(dash)? "border-b-2 border-indigo-600" : ""}`} onClick={()=>(setDash(false),setStats(true))}>
+                            <li className={`py-1 ${(stats)? "border-b-2 border-indigo-600" : ""}`} onClick={()=>(setDash(false),setStats(true))}>
                                 <p className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150">
                                 Statistics
                                 </p>
                             </li>
-                             <li className={`py-1 ${(stats)? "border-b-2 border-indigo-600" : ""}`} onClick={()=>(setDash(true),setStats(false))}>
+                             <li className={`py-1 ${(dash)? "border-b-2 border-indigo-600" : ""}`} onClick={()=>(setDash(true),setStats(false))}>
                              <p className="block py-2 px-3 rounded-lg text-gray-700 hover:text-gray-900 hover:bg-gray-100 duration-150">
                                 Dashbroad
                              </p>
