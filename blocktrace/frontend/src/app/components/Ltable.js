@@ -1,5 +1,22 @@
-export default () => {
+'use client'
 
+import * as Dialog from "@radix-ui/react-dialog";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useAuth } from '../context/auth'
+import toast, { Toaster } from "react-hot-toast";
+
+
+
+
+
+
+export default () => {
+    const[customer,setCustomer]=useState('')
+    const[customeradd,setCustomeradd]=useState('')
+    const[logistic,setLogistic]=useState('')
+    const[location,setLocation]=useState(null)
+    const[auth]=useAuth()
     const tableItems = [
         {
             name: "Solo learn app",
@@ -37,9 +54,21 @@ export default () => {
             plan: "Annually subscription"
         },
     ]
+  
 
-
+    useEffect(() => {
+      if (typeof navigator !== 'undefined' && 'geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(position => {
+          setLocation(position.coords.latitude + ',' + position.coords.longitude);
+        }, (error) => {
+          console.error("Error getting position: ", error);
+        });
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    }, []);
     return (
+        <Dialog.Root>
         <div className="max-w-screen-xl mx-auto px-4 md:px-8 bg-white py-20">
             <div className="items-start justify-between md:flex bg-white">
                 <div className="max-w-lg">
@@ -63,12 +92,6 @@ export default () => {
                         </div>
                     </form>
                 <div className="mt-3 md:mt-0">
-                    <a
-                        href="javascript:void(0)"
-                        className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
-                    >
-                        Add product
-                    </a>
                 </div>
             </div>
             <div className="mt-12 relative h-max overflow-auto">
@@ -97,16 +120,88 @@ export default () => {
                                     <td className="pr-6 py-4 whitespace-nowrap">{item.plan}</td>
                                     <td className="pr-6 py-4 whitespace-nowrap">{item.price}</td>
                                     <td className="text-right whitespace-nowrap">
-                                        <button  className="py-1.5 px-3 text-white hover:text-gray-500 duration-150 hover: bg-blue-400 border rounded-lg">
-                                            View Product
+                                      <Dialog.Trigger>  <button  className="py-1.5 px-3 text-white hover:text-gray-500 duration-150 hover: bg-blue-400 border rounded-lg">
+                                            Check In
                                         </button>
+                                        </Dialog.Trigger>
                                     </td>
                                 </tr>
                             ))
                         }
                     </tbody>
                 </table>
+                <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 w-full h-full bg-black opacity-40" />
+        <Dialog.Content className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-lg mx-auto px-4">
+          <div className="bg-white rounded-md shadow-lg px-10 py-6">
+             
+            <Dialog.Title className="text-lg font-medium text-gray-800 text-center mt-3">
+              Proceed
+            </Dialog.Title>
+            <Dialog.Description className="mt-1 text-sm leading-relaxed text-center text-gray-500 flex flex-col justify-center items-start">
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Product Name</label>
+              <input
+                type='text'
+                placeholder="Name"
+                className='w-full mt-1 focus:border-blue-600 px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150 cursor-not-allowed'
+              />
             </div>
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Product Id</label>
+              <input
+                type='text'
+                placeholder="Product Id"
+                className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150 cursor-not-allowed'
+              />
+            </div>
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Location</label>
+              <input
+                type='text'
+             
+                 placeholder={location}
+                 
+                className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150 cursor-not-allowed'
+              />
+            </div>
+     
+         
+            {/* <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Product Image</label>
+                       <div className="max-w-md h-40 rounded-lg border-2 border-dashed flex items-center justify-center">
+                     <label htmlFor="file" className="cursor-pointer text-center p-4 md:p-8">
+                         <svg className="w-10 h-10 mx-auto" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M12.1667 26.6667C8.48477 26.6667 5.5 23.6819 5.5 20C5.5 16.8216 7.72428 14.1627 10.7012 13.4949C10.5695 12.9066 10.5 12.2947 10.5 11.6667C10.5 7.0643 14.231 3.33334 18.8333 3.33334C22.8655 3.33334 26.2288 6.19709 27.0003 10.0016C27.0556 10.0006 27.1111 10 27.1667 10C31.769 10 35.5 13.731 35.5 18.3333C35.5 22.3649 32.6371 25.7279 28.8333 26.5M25.5 21.6667L20.5 16.6667M20.5 16.6667L15.5 21.6667M20.5 16.6667L20.5 36.6667" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                         </svg>
+                         <p className="mt-3 text-gray-700 max-w-xs mx-auto">Click to <span className="font-medium text-indigo-600">Upload your  file</span> or drag and drop your file here</p>
+                     </label>
+                     <input id="file" type="file" className="hidden" />
+                  </div>
+            </div>
+  */}
+            </Dialog.Description>
+            <div className="items-center gap-2 mt-3 text-sm sm:flex">
+            <Dialog.Close>
+                <button className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2">
+                  Shipment
+                </button>
+                </Dialog.Close>
+             
+            </div>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+      </div>
         </div>
+    </Dialog.Root>
+
+
+
+
+
+
+
+         
     )
 }

@@ -7,10 +7,9 @@ import toast, { Toaster } from "react-hot-toast";
 
 
 export default () => {
-    const[name,setName]=useState('')
-    const[price,setPrice]=useState('')
-    const[description,setDescription]=useState('')
-    const[distributor,setDistributor]=useState('')
+    const[customer,setCustomer]=useState('')
+    const[customeradd,setCustomeradd]=useState('')
+    const[logistic,setLogistic]=useState('')
     const[auth]=useAuth()
     const tableItems = [
         {
@@ -121,45 +120,50 @@ export default () => {
           <div className="bg-white rounded-md shadow-lg px-10 py-6">
              
             <Dialog.Title className="text-lg font-medium text-gray-800 text-center mt-3">
-              Add Product
+              Proceed
             </Dialog.Title>
             <Dialog.Description className="mt-1 text-sm leading-relaxed text-center text-gray-500 flex flex-col justify-center items-start">
             <div className="flex flex-col items-start w-full mt-2">
-              <label className='font-medium'>Name</label>
+              <label className='font-medium'>Product Name</label>
               <input
                 type='text'
-                value={name}
-                onChange={(e)=>setName(e.target.value)} 
-                required
-                className='w-full mt-1 focus:border-blue-600 px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
+                placeholder="Name"
+                className='w-full mt-1 focus:border-blue-600 px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150 cursor-not-allowed'
               />
             </div>
             <div className="flex flex-col items-start w-full mt-2">
-              <label className='font-medium'>Price</label>
+              <label className='font-medium'>Product Id</label>
               <input
                 type='text'
-                
-                onChange={(e)=>setPrice(e.target.value)} 
-                required
+                placeholder="Product Id"
+                className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150 cursor-not-allowed'
+              />
+            </div>
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Logistic Email</label>
+              <input
+                type='text'
+                 value={logistic}
+                 onChange={(e)=>setLogistic(e.target.value)} 
                 className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
               />
             </div>
             <div className="flex flex-col items-start w-full mt-2">
-              <label className='font-medium'>Description</label>
-              <input
-                type='text'
-                
-                onChange={(e)=>setDescription(e.target.value)} 
-                required
-                className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
-              />
-            </div>
-            <div className="flex flex-col items-start w-full mt-2">
-              <label className='font-medium'>Distributor Email</label>
+              <label className='font-medium'>Customer Email</label>
               <input
                 type='email'
-                
-                onChange={(e)=>setDistributor(e.target.value)} 
+                value={customer}
+                onChange={(e)=>setCustomer(e.target.value)} 
+                required
+                className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
+              />
+            </div>
+            <div className="flex flex-col items-start w-full mt-2">
+              <label className='font-medium'>Customer Address</label>
+              <input
+                type='text'
+                value={customeradd}
+                onChange={(e)=>setCustomeradd(e.target.value)} 
                 required
                 className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'
               />

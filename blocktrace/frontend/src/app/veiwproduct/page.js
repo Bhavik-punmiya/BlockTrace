@@ -3,6 +3,7 @@
 import React from 'react'
 import Footer from '../components/Footer'
 import { useState } from "react"
+import {QRCodeSVG} from 'qrcode.react';
 
 function page() {
     const [steps, setStep] = useState({
@@ -73,6 +74,13 @@ function page() {
         aspernatur neque molestiae labore aliquam soluta architecto?
       </dd>
     </div>
+
+     <div className=' w-full py-10 mx-auto '>
+     <QRCodeSVG value="SBFJSDIDFJISJDSFDSD" />
+     </div>
+
+
+
     <div class="w-full my-10">
     <div className="max-w-2xl mx-auto px-4 md:px-0">
             <ul aria-label="Steps" className="items-center text-gray-600 font-medium md:flex">

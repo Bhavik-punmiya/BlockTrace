@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Footer from '../components/Footer'
+import Csection from '../components/Csection'
 
 export default function page() {
     const [state, setState] = useState(false)
@@ -58,8 +59,8 @@ export default function page() {
             </ul>
         </nav>
     </header>
-    <div className='py-20'>
-
+    <div className='w-screen m-auto py-20 '>
+         <Csection/>
     </div>
     <Footer/>
     </div>
