@@ -1,17 +1,33 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Footer from '../components/Footer'
 import { useState } from "react"
 import {QRCodeSVG} from 'qrcode.react';
+import axios from 'axios';
 
 function page() {
+    const[productd,setProductd]=useState('');
     const [steps, setStep] = useState({
         stepsItems: ["Manfracturer", "Distributor", "Logistic", "Consumer"],
         currentStep: 2
     })
     const [state, setState] = useState(false)
+   const fetchapi=async ()=>{
+    const res = await axios.post("http://localhost:8080/api/getproductdetails",
+    {  
+        "productID" : "69b84bd8e2b9d504c6eaed6e0eb3027c"
+          
+       });
+    console.log(res.data)
+    setProductd(res.data)
+   }
 
+
+
+   useEffect(()=>{
+    fetchapi();
+   },[])
   return (
     <div>
       <header className="text-base lg:text-sm">
@@ -47,36 +63,37 @@ function page() {
     <div class="w-1/2 rounded-lg border border-blue-500 py-10 shadow-sm mx-auto my-10 p-10">
   <dl class="-my-3 divide-y divide-gray-100 text-sm">
     <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
-      <dt class="font-medium text-gray-900">Title</dt>
-      <dd class="text-gray-700 sm:col-span-2">Mr</dd>
+      <dt class="font-medium text-gray-900">Product ID :</dt>
+      <dd class="text-gray-700 sm:col-span-2">{productd?.Product?.ProductID}</dd>
     </div>
 
     <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
       <dt class="font-medium text-gray-900">Name</dt>
-      <dd class="text-gray-700 sm:col-span-2">John Frusciante</dd>
+      <dd class="text-gray-700 sm:col-span-2">{productd?.Product?.ProductName}</dd>
     </div>
 
     <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
-      <dt class="font-medium text-gray-900">Occupation</dt>
-      <dd class="text-gray-700 sm:col-span-2">Guitarist</dd>
+      <dt class="font-medium text-gray-900">Description</dt>
+      <dd class="text-gray-700 sm:col-span-2">{productd?.Product?.Description}</dd>
     </div>
 
     <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
-      <dt class="font-medium text-gray-900">Salary</dt>
-      <dd class="text-gray-700 sm:col-span-2">$1,000,000+</dd>
+      <dt class="font-medium text-gray-900">Price</dt>
+      <dd class="text-gray-700 sm:col-span-2">{productd?.Product?.Quantity}</dd>
     </div>
 
     <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
-      <dt class="font-medium text-gray-900">Bio</dt>
+      <dt class="font-medium text-gray-900">Distributor Email</dt>
       <dd class="text-gray-700 sm:col-span-2">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Et facilis debitis explicabo
-        doloremque impedit nesciunt dolorem facere, dolor quasi veritatis quia fugit aperiam
-        aspernatur neque molestiae labore aliquam soluta architecto?
+         {
+            productd?.Product?.Distribution?.DistributorInfo
+
+         }
       </dd>
     </div>
 
-     <div className=' w-full py-10 mx-auto '>
-     <QRCodeSVG value="SBFJSDIDFJISJDSFDSD" />
+     <div className=' w-full py-10 m-auto '>
+     <QRCodeSVG value={productd?.Product?.ProductID} className='m-auto' />
      </div>
 
 

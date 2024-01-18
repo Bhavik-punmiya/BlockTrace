@@ -138,7 +138,7 @@ export default function Home() {
                             })
                         }
                     </ul>
-                    {auth.user?(<div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
+                    {!(auth.user)?(<div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
                         <a href="/login" className="block text-gray-700 hover:text-gray-900">
                             Log in
                         </a>

@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from '../context/auth'
 import toast, { Toaster } from "react-hot-toast";
 
@@ -9,15 +9,59 @@ export default () => {
     const[price,setPrice]=useState('')
     const[description,setDescription]=useState('')
     const[distributor,setDistributor]=useState('')
+    const[tabledata,setTabledata]=useState();
     const[auth]=useAuth()
+<<<<<<< HEAD
     
     
+=======
+
+
+    // const tableItems = [
+    //     {
+    //         name: "Solo learn app",
+    //         date: "Oct 9, 2023",
+    //         status: "Active",
+    //         price: "$35.000",
+    //         plan: "Monthly subscription"
+    //     },
+    //     {
+    //         name: "Window wrapper",
+    //         date: "Oct 12, 2023",
+    //         status: "Active",
+    //         price: "$12.000",
+    //         plan: "Monthly subscription"
+    //     },
+    //     {
+    //         name: "Unity loroin",
+    //         date: "Oct 22, 2023",
+    //         status: "Archived",
+    //         price: "$20.000",
+    //         plan: "Annually subscription"
+    //     },
+    //     {
+    //         name: "Background remover",
+    //         date: "Jan 5, 2023",
+    //         status: "Active",
+    //         price: "$5.000",
+    //         plan: "Monthly subscription"
+    //     },
+    //     {
+    //         name: "Colon tiger",
+    //         date: "Jan 6, 2023",
+    //         status: "Active",
+    //         price: "$9.000",
+    //         plan: "Annually subscription"
+    //     },
+    // ]
+>>>>>>> 87a371370e5a0d43086bdc95f87f41f2eb68c57f
 
  const handleaddproduct =async  ()=>{
      
-try{const res =await axios.get("http://localhost:8080/v1/auth/generateproduct");
+try{
+ const res =await axios.get("http://localhost:8080/v1/auth/generateproduct");
 console.log(res.data)
-  const body= {
+ const body= {
     Product: {
       ProductID: res.data.keys._id,
       ProductName: name,
@@ -31,8 +75,21 @@ console.log(res.data)
         Distributoremail: distributor,
     }
    }
- }   
+ }  
  console.log(body)
+ const dash = await axios.post("http://localhost:8080/api/addmanufacturerdashboard",{
+    "Id" : auth.user.id,
+    "dashboardData" : [name,res.data.keys._id,res.data.keys.createdAt,price,distributor]
+})  
+console.log(dash.data);
+
+const did=await axios.post("http://localhost:8080/v1/auth/getkeyofuser",{"email":distributor});
+
+const distdash = await axios.post("http://localhost:8080/api/adddistributordashboard",{
+    "Id":did.data.user.id,
+    "dashboardData" : [name,res.data.keys._id,res.data.keys.createdAt,price,distributor,1]
+})
+ 
  toast.success("Product Added Successfully") ;
 }
 
@@ -41,6 +98,18 @@ console.log(res.data)
   toast.error("Unable Added Product");
  }
 }
+
+const fetchapi= async()=>{
+    const res = await axios.post("http://localhost:8080/api/getmanufacturerdashboard",{
+        "Id" : auth.user.id
+    })
+    console.log(res)
+    setTabledata(res.data)
+}
+
+useEffect(()=>{
+ fetchapi();
+},[])
 
     return (
 <>
@@ -80,34 +149,37 @@ console.log(res.data)
                 <table className="w-full table-auto text-sm text-left">
                     <thead className="text-gray-600 font-medium border-b">
                         <tr>
-                            <th className="py-3 pr-6">name</th>
-                            <th className="py-3 pr-6">date</th>
-                            <th className="py-3 pr-6">status</th>
-                            <th className="py-3 pr-6">Purchase</th>
-                            <th className="py-3 pr-6">price</th>
+                            <th className="py-3 pr-6">Product Name</th>
+                            <th className="py-3 pr-6">Product Id</th>
+                            <th className="py-3 pr-6">Date</th>
+                            <th className="py-3 pr-6">Price</th>
+                            <th className="py-3 pr-6">Distributor Email</th>
                             <th className="py-3 pr-6"></th>
                         </tr>
                     </thead>
                     <tbody className="text-gray-600 divide-y">
                         {
-                            tableItems.map((item, idx) => (
+                            tabledata && tabledata.map((item, idx) => (
                                 <tr key={idx}>
-                                    <td className="pr-6 py-4 whitespace-nowrap">{item.name}</td>
-                                    <td className="pr-6 py-4 whitespace-nowrap">{item.date}</td>
-                                    <td className="pr-6 py-4 whitespace-nowrap">
-                                        <span className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status == "Active" ? "text-green-600 bg-green-50" : "text-blue-600 bg-blue-50"}`}>
-                                            {item.status}
-                                        </span>
-                                    </td>
-                                    <td className="pr-6 py-4 whitespace-nowrap">{item.plan}</td>
-                                    <td className="pr-6 py-4 whitespace-nowrap">{item.price}</td>
-                                    <td className="text-right whitespace-nowrap">
-                                        <a  href='/veiwproduct' className="py-1.5 px-3 text-white hover:text-gray-500 duration-150 hover: bg-blue-400 border rounded-lg" >
-                                            View Product
-                                        </a>
-                                    </td>
+                                  {item.map((value, index) => (
+                                    <td key={index} className="pr-6 py-4 whitespace-nowrap">{value}</td>
+                                  ))}
+                                  {/* Uncomment and adjust the following if you have specific fields in your items */}
+                                  {/* <td className="pr-6 py-4 whitespace-nowrap">{item.date}</td>
+                                  <td className="pr-6 py-4 whitespace-nowrap">
+                                    <span className={`px-3 py-2 rounded-full font-semibold text-xs ${item.status === "Active" ? "text-green-600 bg-green-50" : "text-blue-600 bg-blue-50"}`}>
+                                      {item.status}
+                                    </span>
+                                  </td>
+                                  <td className="pr-6 py-4 whitespace-nowrap">{item.plan}</td>
+                                  <td className="pr-6 py-4 whitespace-nowrap">{item.price}</td> */}
+                                  <td className="text-right whitespace-nowrap"> 
+                                    <a href={`/viewproduct/${item[1]}`} className="py-1.5 px-3 text-white duration-150 bg-blue-400 border rounded-lg">
+                                      View Product
+                                    </a>
+                                  </td>
                                 </tr>
-                            ))
+                              ))
                         }
                     </tbody>
                 </table>
@@ -137,7 +209,7 @@ console.log(res.data)
               <label className='font-medium'>Price</label>
               <input
                 type='text'
-                
+                value={price}
                 onChange={(e)=>setPrice(e.target.value)} 
                 required
                 className=' mt-1 focus:border-blue-600 w-full px-3 py-2 bg-white text-gray-500 bg-transparent outline-none border shadow-sm rounded-lg duration-150'

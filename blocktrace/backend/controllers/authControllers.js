@@ -36,11 +36,11 @@ const registerController = async (req,res)=>{
             role,
             key
          }).save();
-         const keys = new keyschema({
-            email,
-            role,
-            key
-         }).save();
+         // const keys = new keyschema({
+         //    email,
+         //    role,
+         //    key
+         // }).save();
 
          res.status(201).send({
             success:true,
@@ -170,10 +170,39 @@ const loginController= async (req,res)=>{
 
  }
 
+const getkeybyemail = async (req,res)=>{
+   try{
+      const {email}=req.body;
+   const user = await userschema.findOne({email});
+   res.status(200).send({
+      success:true,
+      message:"Id fetched Successfully",
+      user:{
+         id:user._id,
+      },
+     
+    })
+  
+
+}
+catch(err){
+   console.log(err)
+   res.status(500).send({
+     
+      success:false,
+      message:"ERROR IN keys fetching"
+   });
+
+}
+}
+
+
+
  module.exports = {
    registerController,
    loginController,
    keyController,
-   generateproductController
+   generateproductController,
+   getkeybyemail
 
 };
