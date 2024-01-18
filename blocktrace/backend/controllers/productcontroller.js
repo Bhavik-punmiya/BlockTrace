@@ -57,11 +57,11 @@ const addManufacturerDashboardController = async (req, res) => {
 
 const getManufacturerDashboardController = async (req, res) => {
     try {
-        const { manufacturerID } = req.body;
+        const { Id } = req.body;
 
         // Call your function to get manufacturer user dashboard
-        const manufacturerUserDashboard = await getManufacturerUserDashboard(manufacturerID);
-        console.log(m)
+        const manufacturerUserDashboard = await getManufacturerUserDashboard(Id);
+        
         res.json(manufacturerUserDashboard);
     } catch (error) {
         console.error('Error getting manufacturer user dashboard:', error);

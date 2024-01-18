@@ -19,7 +19,8 @@ function page() {
     const navigate = useRouter();
     const handleSubmit=async()=>{
         try{
-           const res = await axios.post("/v1/auth/register",{name,email,password,role});
+          const body = {"name":name,"email":email,"password":password,"role":role};
+           const res = await axios.post("http://localhost:8080/v1/auth/register",body);
          
            if(res.data.success){
             toast.success("Registered Successfully");
@@ -83,7 +84,7 @@ function page() {
               <input
                 type='email'
                 value={email}
-                onChange={(e)=>setPassword(e.target.value)} 
+                onChange={(e)=>setEmail(e.target.value)} 
                 required
                 className='w-full mt-3 focus:border-blue-600 px-3 py-2 bg-white text-gray-600 bg-transparent outline-none border shadow-md rounded-lg duration-150'
               />
