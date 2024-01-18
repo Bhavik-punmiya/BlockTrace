@@ -59,7 +59,7 @@ export default function page() {
         </nav>
     </header>
     <div className='py-20'>
-
+      
     </div>
     <Footer/>
     </div>
