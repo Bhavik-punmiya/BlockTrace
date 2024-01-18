@@ -27,7 +27,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     }
  }
 
- async function addManufacturerDashboard(manufacturerRow, userID) {
+ async function addManufacturerDashboardDetails(manufacturerRow, userID) {
     try {
         const tx = await contract.addManufacturerDashboard(manufacturerRow, userID);
         await tx.wait();
@@ -37,7 +37,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     }
  }
  
- async function addDistributorDashboard(distributorRow, userID) {
+ async function addDistributorDashboardDetails(distributorRow, userID) {
     try {
         const tx = await contract.addDistributorDashboard(distributorRow, userID);
         await tx.wait();
@@ -47,7 +47,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     }
  }
  
- async function addLogisticsDashboard(logisticsRow, userID) {
+ async function addLogisticsDashboardDetails(logisticsRow, userID) {
     try {
         const tx = await contract.addLogisticsDashboard(logisticsRow, userID);
         await tx.wait();
@@ -57,7 +57,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     }
  }
 
- async function getManufacturerUserDashboard(userID) {
+ async function getManufacturerUserDashboardDetails(userID) {
     try {
         const dashboard = await contract.getManufacturerUserDashboard(userID);
         console.log("Manufacturer user dashboard: ", dashboard);
@@ -75,7 +75,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     }
  }
  
- async function getDistributorUserDashboard(userID) {
+ async function getDistributorUserDashboardDetails(userID) {
     try {
         const dashboard = await contract.getDistributorUserDashboard(userID);
         console.log("Distributor user dashboard: ", dashboard);
@@ -84,7 +84,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     }
  }
  
- async function getLogisticsUserDashboard(userID) {
+ async function getLogisticsDashboardDetails(userID) {
     try {
         const dashboard = await contract.getLogisticsUserDashboard(userID);
         console.log("Logistics user dashboard: ", dashboard);
@@ -96,12 +96,12 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
 
  module.exports = {
     addProductDetails,
-    addManufacturerDashboard,
-    addDistributorDashboard,
-    addLogisticsDashboard,
-    getManufacturerUserDashboard,
-    getDistributorUserDashboard,
-    getLogisticsUserDashboard,
-    getProductIpfsHash
+    getProductIpfsHash,
+    addManufacturerDashboardDetails,
+    addDistributorDashboardDetails,
+    addLogisticsDashboardDetails,
+    getManufacturerUserDashboardDetails,
+    getDistributorUserDashboardDetails,
+    getLogisticsDashboardDetails
  };
  
