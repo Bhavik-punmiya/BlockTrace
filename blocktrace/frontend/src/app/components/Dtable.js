@@ -27,7 +27,7 @@ export default () => {
       console.log(getpro.data);
        const currentDate = new Date().toDateString();
        getpro.data.Product.timeline['distributor'] = currentDate;
-       getpro.data.Product['Customer Email']=customer;
+       getpro.data.Product['customeremail']=customer;
        const body = getpro.data;
 
        const addproduct =await axios.post("http://localhost:8080/api/addproductdetails",{ "productID" : productid,"jsonData":body});  
@@ -38,7 +38,7 @@ export default () => {
 
        const dash = await axios.post("http://localhost:8080/api/addlogisticsdashboard",{
         "Id":did.data.user.id,
-        "dashboardData" : [customer,productid,customeradd,currentDate,distributor]
+        "dashboardData" : [customer,productid,customeradd,currentDate,distributor,'1']
       })  
       console.log(dash);
  
@@ -98,11 +98,10 @@ export default () => {
                 <table className="w-full table-auto text-sm text-left">
                     <thead className="text-gray-600 font-medium border-b">
                         <tr>
-                            <th className="py-3 pr-6">name</th>
-                            <th className="py-3 pr-6">date</th>
-                            <th className="py-3 pr-6">status</th>
-                            <th className="py-3 pr-6">Purchase</th>
-                            <th className="py-3 pr-6">price</th>
+                            <th className="py-3 pr-6">Product Name</th>
+                            <th className="py-3 pr-6">Product Id</th>
+                            <th className="py-3 pr-6">MFG date</th>
+                            <th className="py-3 pr-6">Price</th>
                             <th className="py-3 pr-6"></th>
                         </tr>
                     </thead>
@@ -110,9 +109,9 @@ export default () => {
                         {    
                             
                               tabledata && tabledata.map((item, idx) => (
-                                  <tr key={idx}>
-                                    {item.map((value, index) => (
-                                      <td key={index} className="pr-6 py-4 whitespace-nowrap">{value}</td>
+                               <tr key={idx}>
+                                    {item.map((value, index) => ( 
+                                     <td key={index} className="pr-6 py-4 whitespace-nowrap"><a href={'/veiwproduct/'+item[1]}>{value} </a></td>
                                     ))}
                                     {/* Uncomment and adjust the following if you have specific fields in your items */}
                                     {/* <td className="pr-6 py-4 whitespace-nowrap">{item.date}</td>

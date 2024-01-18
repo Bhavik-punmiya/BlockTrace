@@ -25,7 +25,7 @@ console.log(res.data)
       ProductID: res.data.keys._id,
       ProductName: name,
       Description: description,
-      
+      price:price,
       Manufacturer: {
           ManufacturerName: auth.user.name,
           ManufacturerEmail: auth.user.email
@@ -142,7 +142,7 @@ useEffect(()=>{
                                   <td className="pr-6 py-4 whitespace-nowrap">{item.plan}</td>
                                   <td className="pr-6 py-4 whitespace-nowrap">{item.price}</td> */}
                                   <td className="text-right whitespace-nowrap"> 
-                                    <a href={`/viewproduct/${item[1]}`} className="py-1.5 px-3 text-white duration-150 bg-blue-400 border rounded-lg">
+                                    <a href={`/veiwproduct/${item[1]}`} className="py-1.5 px-3 text-white duration-150 bg-blue-400 border rounded-lg">
                                       View Product
                                     </a>
                                   </td>

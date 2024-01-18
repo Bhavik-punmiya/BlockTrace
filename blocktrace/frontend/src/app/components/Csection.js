@@ -10,7 +10,7 @@ const router = useRouter();
 
 
  const handlegetdetailes=()=>{
-   router.push(`/viewproduct/${productid}`);
+   router.push(`/veiwproduct/${productid}`);
  }
 
  const previewStyle = {
