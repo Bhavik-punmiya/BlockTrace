@@ -56,11 +56,10 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
  async function getManufacturerUserDashboardDetails(userID) {
     try {
         const dashboard = await contract.getManufacturerUserDashboard(userID);
-<<<<<<< HEAD
-        console.log("Manufacturer user dashboard: ", dashboard[0]);
-=======
+
+
         console.log("Manufacturer user dashboard: ", dashboard);
->>>>>>> 87a371370e5a0d43086bdc95f87f41f2eb68c57f
+
         return dashboard;
     } catch (error) {
         console.error("Error getting manufacturer user dashboard: ", error);

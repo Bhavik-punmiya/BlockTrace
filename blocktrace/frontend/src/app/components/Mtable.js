@@ -11,50 +11,8 @@ export default () => {
     const[distributor,setDistributor]=useState('')
     const[tabledata,setTabledata]=useState();
     const[auth]=useAuth()
-<<<<<<< HEAD
-    
-    
-=======
 
 
-    // const tableItems = [
-    //     {
-    //         name: "Solo learn app",
-    //         date: "Oct 9, 2023",
-    //         status: "Active",
-    //         price: "$35.000",
-    //         plan: "Monthly subscription"
-    //     },
-    //     {
-    //         name: "Window wrapper",
-    //         date: "Oct 12, 2023",
-    //         status: "Active",
-    //         price: "$12.000",
-    //         plan: "Monthly subscription"
-    //     },
-    //     {
-    //         name: "Unity loroin",
-    //         date: "Oct 22, 2023",
-    //         status: "Archived",
-    //         price: "$20.000",
-    //         plan: "Annually subscription"
-    //     },
-    //     {
-    //         name: "Background remover",
-    //         date: "Jan 5, 2023",
-    //         status: "Active",
-    //         price: "$5.000",
-    //         plan: "Monthly subscription"
-    //     },
-    //     {
-    //         name: "Colon tiger",
-    //         date: "Jan 6, 2023",
-    //         status: "Active",
-    //         price: "$9.000",
-    //         plan: "Annually subscription"
-    //     },
-    // ]
->>>>>>> 87a371370e5a0d43086bdc95f87f41f2eb68c57f
 
  const handleaddproduct =async  ()=>{
      
