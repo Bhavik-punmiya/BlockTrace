@@ -13,7 +13,7 @@ const connectedWallet = wallet.connect(provider);
 
 const contractABI = JSON.parse(fs.readFileSync('./constants/ABI.json'));
 
-const contractAddress = '0xbB431ef34523555C11381246FCcC20Be23453475';
+const contractAddress = '0xF00f428430e5152e7AE272780B5d9Cf0e02bbC20';
 
 const contract = new ethers.Contract(contractAddress, contractABI, connectedWallet);
 
@@ -65,6 +65,15 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
         console.error("Error getting manufacturer user dashboard: ", error);
     }
  }
+ async function getProductIpfsHash(userID) {
+    try {
+        const IpfsProductHashfromchain = await contract.getProductIpfsHash(userID);
+        console.log("Manufacturer user dashboard: ", IpfsProductHashfromchain);
+        return IpfsProductHashfromchain;
+    } catch (error) {
+        console.error("Error getting manufacturer user dashboard: ", error);
+    }
+ }
  
  async function getDistributorUserDashboard(userID) {
     try {
@@ -92,6 +101,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     addLogisticsDashboard,
     getManufacturerUserDashboard,
     getDistributorUserDashboard,
-    getLogisticsUserDashboard
+    getLogisticsUserDashboard,
+    getProductIpfsHash
  };
  

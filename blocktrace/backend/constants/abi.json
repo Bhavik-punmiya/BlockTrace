@@ -1,5 +1,44 @@
 [
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string[]",
+				"name": "distributorRow",
+				"type": "string[]"
+			}
+		],
+		"name": "DistributorDashboardUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string[]",
+				"name": "logisticsRow",
+				"type": "string[]"
+			}
+		],
+		"name": "LogisticsDashboardUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string[]",
+				"name": "manufacturerRow",
+				"type": "string[]"
+			}
+		],
+		"name": "ManufacturerDashboardUpdated",
+		"type": "event"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "string[]",
@@ -57,45 +96,6 @@
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string[]",
-				"name": "distributorRow",
-				"type": "string[]"
-			}
-		],
-		"name": "DistributorDashboardUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string[]",
-				"name": "logisticsRow",
-				"type": "string[]"
-			}
-		],
-		"name": "LogisticsDashboardUpdated",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "string[]",
-				"name": "manufacturerRow",
-				"type": "string[]"
-			}
-		],
-		"name": "ManufacturerDashboardUpdated",
-		"type": "event"
 	},
 	{
 		"inputs": [
@@ -202,6 +202,44 @@
 				"internalType": "string[][]",
 				"name": "",
 				"type": "string[][]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "productID",
+				"type": "string"
+			}
+		],
+		"name": "getProductImageHash",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "productID",
+				"type": "string"
+			}
+		],
+		"name": "getProductIpfsHash",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
