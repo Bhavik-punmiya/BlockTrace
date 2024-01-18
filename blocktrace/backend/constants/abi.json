@@ -77,6 +77,24 @@
 	{
 		"inputs": [
 			{
+				"internalType": "string[]",
+				"name": "manufacturerRow",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string",
+				"name": "userID",
+				"type": "string"
+			}
+		],
+		"name": "addManufacturerDashboard",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "string",
 				"name": "productID",
 				"type": "string"

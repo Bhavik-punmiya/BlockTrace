@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db.js');
-const productRoute = require('./routes/apiroute');
+const apiroute = require('./routes/apiroute');
 const authRoute = require('./routes/authRoute.js');
 dotenv.config();
 
@@ -19,7 +19,7 @@ app.post('/api/post-example', (req, res) => {
   res.json({ message: 'POST request received successfully' });
 });
 
-app.use('/api/product', productRoute); // Use the product route
+app.use('/api', apiroute); // Use the product route
 app.use('/v1/auth', authRoute);
 
 const port = process.env.PORT || 8080;

@@ -1,7 +1,16 @@
 // controllers/productController.js
 
 const fs = require('fs');
-const { addproductdetails, getproductdetails, addManufacturerDashboard, getManufacturerUserDashboard } = require('../main.js');
+const { 
+    addproductdetails,
+    getproductdetails,
+    addManufacturerDashboard,
+    getManufacturerUserDashboard,
+    addDistributorDashboard,
+    getDistributorUserDashboard,
+    addLogisticsDashboard,
+    getLogisticsDashboard
+ } = require('../main.js');
 
 const addProductDetailsController = async (req, res) => {
     try {
@@ -33,10 +42,11 @@ const getProductDetailsController = async (req, res) => {
 
 const addManufacturerDashboardController = async (req, res) => {
     try {
-        const { manufacturerID, dashboardData } = req.body;
-
+        const { Id, dashboardData } = req.body;
+       
+        const dashboardDataArray = Array.from(dashboardData); 
         // Call your function to add manufacturer dashboard information
-        await addManufacturerDashboard(manufacturerID, dashboardData);
+        await addManufacturerDashboard(dashboardDataArray, Id);
 
         res.json({ message: 'Manufacturer dashboard updated successfully' });
     } catch (error) {
@@ -51,16 +61,67 @@ const getManufacturerDashboardController = async (req, res) => {
 
         // Call your function to get manufacturer user dashboard
         const manufacturerUserDashboard = await getManufacturerUserDashboard(manufacturerID);
-
+        console.log(m)
         res.json(manufacturerUserDashboard);
     } catch (error) {
         console.error('Error getting manufacturer user dashboard:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+async function addDistributorDashboardController(req, res) {
+    try {
+        const { Id,dashboardData } = req.body;
+        const dashboardDataArray = Array.from(dashboardData); 
+        await addDistributorDashboard(dashboardDataArray, Id);
+        res.json({ message: 'Distributor dashboard updated successfully in Ethereum contract' });
+    } catch (error) {
+        console.error('Error adding distributor dashboard:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function addLogisticsDashboardController(req, res) {
+    try {
+        const { dashboardData, Id } = req.body;
+        const dashboardDataArray = Array.from(dashboardData); 
+        await addLogisticsDashboard(dashboardDataArray, Id);
+        res.json({ message: 'Logistics dashboard updated successfully in Ethereum contract' });
+    } catch (error) {
+        console.error('Error adding logistics dashboard:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function getDistributorUserDashboardController(req, res) {
+    try {
+        const { Id } = req.body;
+        const distributorUserDashboard = await getDistributorUserDashboard(Id);
+        res.json(distributorUserDashboard);
+    } catch (error) {
+        console.error('Error getting distributor user dashboard:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function getLogisticsDashboardController(req, res) {
+    try {
+        const { Id } = req.body;
+        const logisticsUserDashboard = await getLogisticsDashboard(Id);
+        res.json(logisticsUserDashboard);
+    } catch (error) {
+        console.error('Error getting logistics user dashboard:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 module.exports = {
     addProductDetailsController,
     getProductDetailsController,
     addManufacturerDashboardController,
-    getManufacturerDashboardController
+    getManufacturerDashboardController,
+    addDistributorDashboardController,
+    addLogisticsDashboardController,
+    getDistributorUserDashboardController,
+    getLogisticsDashboardController
 };

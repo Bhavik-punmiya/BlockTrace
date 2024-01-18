@@ -13,14 +13,13 @@ const connectedWallet = wallet.connect(provider);
 
 const contractABI = JSON.parse(fs.readFileSync('./constants/ABI.json'));
 
-const contractAddress = '0xF00f428430e5152e7AE272780B5d9Cf0e02bbC20';
+const contractAddress = '0xb007f5d5Ab3A3245BD91F9ac17156E2A2309b729';
 
 const contract = new ethers.Contract(contractAddress, contractABI, connectedWallet);
 
 async function addProductDetails(productID, ipfsHash, imageHash) {
     try {
         const tx = await contract.addProductDetails(productID, ipfsHash, imageHash);
-        await tx.wait();
         console.log("Product details added successfully.");
     } catch (error) {
         console.error("Error adding product details: ", error);
@@ -30,7 +29,6 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
  async function addManufacturerDashboardDetails(manufacturerRow, userID) {
     try {
         const tx = await contract.addManufacturerDashboard(manufacturerRow, userID);
-        await tx.wait();
         console.log("Manufacturer dashboard updated successfully.");
     } catch (error) {
         console.error("Error updating manufacturer dashboard: ", error);
@@ -40,7 +38,6 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
  async function addDistributorDashboardDetails(distributorRow, userID) {
     try {
         const tx = await contract.addDistributorDashboard(distributorRow, userID);
-        await tx.wait();
         console.log("Distributor dashboard updated successfully.");
     } catch (error) {
         console.error("Error updating distributor dashboard: ", error);
@@ -50,7 +47,6 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
  async function addLogisticsDashboardDetails(logisticsRow, userID) {
     try {
         const tx = await contract.addLogisticsDashboard(logisticsRow, userID);
-        await tx.wait();
         console.log("Logistics dashboard updated successfully.");
     } catch (error) {
         console.error("Error updating logistics dashboard: ", error);

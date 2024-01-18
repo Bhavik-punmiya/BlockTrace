@@ -46,12 +46,10 @@ const getproductdetails = async (productId) => {
   }
 };
 
-const addManufacturerDashboard = async (manufacturerID, dashboardData) => {
+const addManufacturerDashboard = async (manufacturerRow, manufacturerID) => {
   try {
     // Call your function to add a row to the Manufacturer Dashboard
-    await addManufacturerDashboardDetails(manufacturerID, dashboardData);
-
-    console.log('Manufacturer dashboard updated successfully.');
+    await addManufacturerDashboardDetails(manufacturerRow, manufacturerID);
   } catch (error) {
     console.error('Error updating manufacturer dashboard:', error);
   }
@@ -70,6 +68,43 @@ const getManufacturerUserDashboard = async (manufacturerID) => {
   }
 };
 
+const addDistributorDashboard = async (distributorRow, userID) => {
+  try {
+    await addDistributorDashboardDetails(distributorRow, userID);
+  } catch (error) {
+    console.error('Error updating distributor dashboard:', error);
+  }
+};
+
+const getDistributorUserDashboard = async (userID) => {
+  try {
+    const distributorUserDashboard = await getDistributorUserDashboardDetails(userID);
+    return distributorUserDashboard;
+  } catch (error) {
+    console.error('Error getting distributor user dashboard:', error);
+    throw error;
+  }
+};
+
+const addLogisticsDashboard = async (logisticsRow, userID) => {
+  try {
+    await addLogisticsDashboardDetails(logisticsRow, userID);
+  } catch (error) {
+    console.error('Error updating logistics dashboard:', error);
+  }
+};
+
+const getLogisticsDashboard = async (userID) => {
+  try {
+    const logisticsUserDashboard = await getLogisticsDashboardDetails(userID);
+    return logisticsUserDashboard;
+  } catch (error) {
+    console.error('Error getting logistics user dashboard:', error);
+    throw error;
+  }
+};
+
+
 
 const productId = "69b84bd8e2b9d504c6eaed6e0eb3027c";
 // const ipfs = 'QmSztkBBdpZik9wWyrTtBmaLCcvVPMtcksm4cJ3JiT6krN'
@@ -84,4 +119,13 @@ const decryptFiles = async () => {
 // addproductdetails(productId);
 
 
-module.exports = { addproductdetails, getproductdetails, addManufacturerDashboard, getManufacturerUserDashboard, };
+module.exports = {
+  addproductdetails,
+  getproductdetails,
+  addManufacturerDashboard,
+  getManufacturerUserDashboard,
+  addDistributorDashboard,
+  getDistributorUserDashboard,
+  addLogisticsDashboard,
+  getLogisticsDashboard,
+};
