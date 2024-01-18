@@ -89,6 +89,7 @@ const getDistributorUserDashboard = async (userID) => {
 const addLogisticsDashboard = async (logisticsRow, userID) => {
   try {
     await addLogisticsDashboardDetails(logisticsRow, userID);
+    
   } catch (error) {
     console.error('Error updating logistics dashboard:', error);
   }
