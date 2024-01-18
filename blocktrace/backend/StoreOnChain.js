@@ -56,7 +56,8 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
  async function getManufacturerUserDashboardDetails(userID) {
     try {
         const dashboard = await contract.getManufacturerUserDashboard(userID);
-        console.log("Manufacturer user dashboard: ", dashboard);
+        console.log("Manufacturer user dashboard: ", dashboard[0]);
+        return dashboard;
     } catch (error) {
         console.error("Error getting manufacturer user dashboard: ", error);
     }
@@ -74,7 +75,8 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
  async function getDistributorUserDashboardDetails(userID) {
     try {
         const dashboard = await contract.getDistributorUserDashboard(userID);
-        console.log("Distributor user dashboard: ", dashboard);
+        console.log(dashboard);
+        return dashboard
     } catch (error) {
         console.error("Error getting distributor user dashboard: ", error);
     }
@@ -84,6 +86,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     try {
         const dashboard = await contract.getLogisticsUserDashboard(userID);
         console.log("Logistics user dashboard: ", dashboard);
+        return dashboard
     } catch (error) {
         console.error("Error getting logistics user dashboard: ", error);
     }
