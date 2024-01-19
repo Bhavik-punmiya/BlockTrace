@@ -38,15 +38,15 @@ export default () => {
 
        const dash = await axios.post("http://localhost:8080/api/addlogisticsdashboard",{
         "Id":did.data.user.id,
-        "dashboardData" : [customer,productid,customeradd,currentDate,distributor,'1']
+        "dashboardData" : [customer,productid,customeradd,currentDate]
       })  
       console.log(dash);
  
-       toast.success("Product Added Successfully") ;
+       toast.success("Product Shipped Successfully") ;
       }
   catch(err){
         console.log(err);
-        toast.error("Unable Added Product");
+        toast.error("Unable ship Product");
        }
       }
       
@@ -204,7 +204,7 @@ export default () => {
             </Dialog.Description>
             <div className="items-center gap-2 mt-3 text-sm sm:flex">
             <Dialog.Close>
-              {modaldata &&  <button onClick={()=>(handleshipment(modaldata[1],modaldata[4]))}className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2">
+              {modaldata &&  <button onClick={()=>(handleshipment(modaldata[1]))}className="w-full mt-2 p-2.5 flex-1 text-white bg-indigo-600 rounded-md outline-none ring-offset-2 ring-indigo-600 focus:ring-2">
                   Shipment
                 </button>}
                 </Dialog.Close>

@@ -84,7 +84,9 @@ async function addDistributorDashboardController(req, res) {
 async function addLogisticsDashboardController(req, res) {
     try {
         const { dashboardData, Id } = req.body;
-        const dashboardDataArray = Array.from(dashboardData); 
+        const dashboardDataArray = Array.from(dashboardData);
+        console.log(Id);
+        console.log(dashboardDataArray);
         await addLogisticsDashboard(dashboardDataArray, Id);
         res.json({ message: 'Logistics dashboard updated successfully in Ethereum contract' });
     } catch (error) {

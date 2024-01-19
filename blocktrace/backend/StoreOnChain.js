@@ -13,7 +13,7 @@ const connectedWallet = wallet.connect(provider);
 
 const contractABI = JSON.parse(fs.readFileSync('./constants/ABI.json'));
 
-const contractAddress = '0xb007f5d5Ab3A3245BD91F9ac17156E2A2309b729';
+const contractAddress = '0x994c09CDe753F8AD24fa8A65a1B2978455aB7c16';
 
 const contract = new ethers.Contract(contractAddress, contractABI, connectedWallet);
 

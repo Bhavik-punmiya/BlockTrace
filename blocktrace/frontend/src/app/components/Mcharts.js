@@ -36,7 +36,7 @@ const dt = [10, 15, 25, 7, 9, 8, 30, 35, 17, 6, 14, 20];
     labels: dt.map((entry, index) => `Month ${index + 1}`),
     datasets: [
       {
-        label: 'Conversion Rate',
+        label: 'Products Manufactured',
         data: dt,
         fill: false,
         borderColor: '#2196F3',
