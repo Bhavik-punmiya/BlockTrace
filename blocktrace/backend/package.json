@@ -1,4 +1,16 @@
 {
+  "name": "blocktrace",
+  "description": "Simple hello world sample in Node",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Bhavik Punmiya",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "dependencies": {
     "axios": "^1.6.5",
     "bcrypt": "^5.1.1",
