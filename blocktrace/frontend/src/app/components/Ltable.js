@@ -111,9 +111,6 @@ export default () => {
                     <h3 className="text-gray-800 text-xl font-bold sm:text-2xl">
                         All products
                     </h3>
-                    <p className="text-gray-600 mt-2">
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                    </p>
                 </div>
                 <form onSubmit={(e) => e.preventDefault()} className='flex-1 items-center justify-center pb-4 lg:flex lg:pb-0 mt-3 md:mt-0'>
                         <div className="flex items-center gap-1 px-2 border rounded-lg">
@@ -134,11 +131,10 @@ export default () => {
                 <table className="w-full table-auto text-sm text-left">
                     <thead className="text-gray-600 font-medium border-b">
                         <tr>
-                            <th className="py-3 pr-6">name</th>
-                            <th className="py-3 pr-6">date</th>
-                            <th className="py-3 pr-6">status</th>
-                            <th className="py-3 pr-6">Purchase</th>
-                            <th className="py-3 pr-6">price</th>
+                            <th className="py-3 pr-6">Customer Email</th>
+                            <th className="py-3 pr-6">Product Id</th>
+                            <th className="py-3 pr-6">Customer Address</th>
+                            <th className="py-3 pr-6">Date</th>
                             <th className="py-3 pr-6"></th>
                         </tr>
                     </thead>
