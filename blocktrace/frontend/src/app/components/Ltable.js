@@ -148,7 +148,7 @@ export default () => {
                             tabledata && tabledata.map((item, idx) => (
                                 <tr key={idx}>
                                   {item.map((value, index) => (
-                                    <td key={index} className="pr-6 py-4 whitespace-nowrap">{value}</td>
+                                    <td key={index} className="pr-6 py-4 whitespace-nowrap"><a href={'/veiwproduct/'+item[1]}>{value} </a></td>
                                   ))}
                                   {/* Uncomment and adjust the following if you have specific fields in your items */}
                                   {/* <td className="pr-6 py-4 whitespace-nowrap">{item.date}</td>

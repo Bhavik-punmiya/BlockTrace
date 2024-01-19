@@ -89,6 +89,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
     try {
         const dashboard = await contract.getLogisticsUserDashboard(userID);
         console.log("Logistics user dashboard: ", dashboard);
+        return dashboard;
     } catch (error) {
         console.error("Error getting logistics user dashboard: ", error);
     }

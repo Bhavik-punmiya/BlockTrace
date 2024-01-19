@@ -9,20 +9,46 @@ import { useParams } from 'next/navigation'
 
 function page() {
     const[productd,setProductd]=useState('');
-    const [steps, setStep] = useState({
-        stepsItems: ["Manfracturer", "Distributor", "Logistic", "Consumer"],
-        currentStep: 2
-    })
-
+    const [steps, setSteps] = useState({
+        stepsItems: ["Manufacturer", "Distributor", "Logistic", "Consumer"],
+        currentStep: 0
+    });
 
     const params = useParams();
     const [state, setState] = useState(false)
+    const calculateCompletedSteps = (timeline) => {
+        const stepOrder = ["manufacturer", "distributor", "logistics", "consumer"]; // Include 'consumer' if it appears in the timeline
+        let completedSteps = stepOrder.reduce((acc, step) => timeline[step] ? acc + 1 : acc, 0);
+
+        // If all previous steps are completed but 'consumer' step data is not in timeline, mark 'consumer' as the current step
+        if (completedSteps === stepOrder.length - 1 && !timeline["consumer"]) {
+            completedSteps = stepOrder.length - 1;
+        }
+
+        return completedSteps;
+    };
+    const stepToTimelineKey = {
+        "Manufacturer": "manufacturer",
+        "Distributor": "distributor",
+        "Logistic": "logistics", // Adjusted key for 'Logistic'
+        "Consumer": "consumer"
+    };
+
    const fetchapi=async ()=>{
     const res = await axios.post("http://localhost:8080/api/getproductdetails",
     {  
         "productID" : params.id
           
        });
+      
+
+    const timeline = res.data?.Product?.timeline;
+    if (timeline) {
+        const completedSteps = calculateCompletedSteps(timeline);
+        setSteps(prev => ({ ...prev, currentStep: completedSteps }));
+    }
+
+
     console.log(res.data)
     setProductd(res.data)
    }
@@ -83,14 +109,25 @@ function page() {
 
     <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
       <dt class="font-medium text-gray-900">Price</dt>
-      <dd class="text-gray-700 sm:col-span-2">{productd?.Product?.Quantity}</dd>
+      <dd class="text-gray-700 sm:col-span-2">{productd?.Product?.price}</dd>
     </div>
 
     <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
       <dt class="font-medium text-gray-900">Distributor Email</dt>
       <dd class="text-gray-700 sm:col-span-2">
          {
-            productd?.Product?.Distribution?.DistributorInfo
+            productd?.Product?.Distribution?.Distributoremail
+
+
+         }
+      </dd>
+    </div>
+    <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
+      <dt class="font-medium text-gray-900">Customer Email</dt>
+      <dd class="text-gray-700 sm:col-span-2">
+         {
+            productd?.Product?.customeremail
+
 
          }
       </dd>
@@ -104,32 +141,28 @@ function page() {
 
     <div class="w-full my-10">
     <div className="max-w-2xl mx-auto px-4 md:px-0">
-            <ul aria-label="Steps" className="items-center text-gray-600 font-medium md:flex">
-                {steps.stepsItems.map((item, idx) => (
-                    <li aria-current={steps.currentStep == idx + 1 ? "step" : false} className="flex gap-x-3 md:flex-col md:flex-1 md:gap-x-0">
-                        <div className="flex flex-col items-center md:flex-row md:flex-1">
-                            <hr className={`w-full border hidden md:block ${idx == 0 ? "border-none" : "" || steps.currentStep >= idx + 1 ? "border-indigo-600" : ""}`} />
-                            <div className={`w-8 h-8 rounded-full border-2 flex-none flex items-center justify-center ${steps.currentStep > idx + 1 ? "bg-indigo-600 border-indigo-600" : "" || steps.currentStep == idx + 1 ? "border-indigo-600" : ""}`}>
-                                <span className={`w-2.5 h-2.5 rounded-full bg-indigo-600 ${steps.currentStep != idx + 1 ? "hidden" : ""}`}></span>
-                                {
-                                    steps.currentStep > idx + 1 ? (
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                        </svg>
-                                    ) : ""
-                                }
+                <ul aria-label="Steps" className="text-gray-600 font-medium md:flex md:justify-between">
+                    {steps.stepsItems.map((item, idx) => (
+                        <li key={idx} className="flex flex-col items-center md:flex-1">
+                            <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center mb-2 ${steps.currentStep > idx ? "bg-indigo-600 border-indigo-600" : steps.currentStep === idx ? "border-indigo-600" : "border-gray-300"}`}>
+                                {steps.currentStep > idx ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                ) : (
+                                    <span className="text-sm font-semibold text-gray-700">{idx + 1}</span>
+                                )}
                             </div>
-                            <hr className={`h-12 border md:w-full md:h-auto ${idx + 1 == steps.stepsItems.length ? "border-none" : "" || steps.currentStep > idx + 1 ? "border-indigo-600" : ""}`} />
-                        </div>
-                        <div className="h-8 flex justify-center items-center md:mt-3 md:h-auto">
-                            <h3 className={`text-sm ${steps.currentStep == idx + 1 ? "text-indigo-600" : ""}`}>
+                            <h3 className={`text-sm mb-1 ${steps.currentStep === idx ? "text-indigo-600 font-bold" : "text-gray-500"}`}>
                                 {item}
                             </h3>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-        </div>
+                            <p className="text-xs text-gray-500 text-center">
+                                {productd?.Product?.timeline[stepToTimelineKey[item]]}
+                            </p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
     </div>
 
   </dl>
