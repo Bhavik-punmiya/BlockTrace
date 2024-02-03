@@ -6,66 +6,31 @@ import { useEffect, useState } from "react";
 import { useAuth } from '../context/auth'
 import {QRCodeSVG} from 'qrcode.react';
 import toast, { Toaster } from "react-hot-toast";
-
+require('dotenv').config();
+import abi from '../constants/abi.js'
+import {ethers} from "ethers";
+const { JsonRpcProvider } = require('ethers/providers');
+import contractFunction from "../constants/contract.js";
 
 
 
 
 
 export default () => {
-    const[location,setLocation]=useState(null)
-    const[auth]=useAuth()
-    const[modaldata,setModaldata]=useState();
-    const[tabledata,setTabledata]=useState();
-
-    // const tableItems = [
-    //     {
-    //         name: "Solo learn app",
-    //         date: "Oct 9, 2023",
-    //         status: "Active",
-    //         price: "$35.000",
-    //         plan: "Monthly subscription"
-    //     },
-    //     {
-    //         name: "Window wrapper",
-    //         date: "Oct 12, 2023",
-    //         status: "Active",
-    //         price: "$12.000",
-    //         plan: "Monthly subscription"
-    //     },
-    //     {
-    //         name: "Unity loroin",
-    //         date: "Oct 22, 2023",
-    //         status: "Archived",
-    //         price: "$20.000",
-    //         plan: "Annually subscription"
-    //     },
-    //     {
-    //         name: "Background remover",
-    //         date: "Jan 5, 2023",
-    //         status: "Active",
-    //         price: "$5.000",
-    //         plan: "Monthly subscription"
-    //     },
-    //     {
-    //         name: "Colon tiger",
-    //         date: "Jan 6, 2023",
-    //         status: "Active",
-    //         price: "$9.000",
-    //         plan: "Annually subscription"
-    //     },
-    // ]
-
-   const handleCheckin= async (productid)=>{
-   try{ let getpro = await axios.post("http://localhost:8080/api/getproductdetails",
-    {  
-        "productID" : productid
-          
-       });
+  const[location,setLocation]=useState(null)
+  const[auth]=useAuth()
+  const[modaldata,setModaldata]=useState();
+  const[tabledata,setTabledata]=useState();
+  
+  const handleCheckin= async (productid)=>{
+   const {addProductDetails, getProductDetails} = await contractFunction();
+   try { 
+    const ProductDetails = await getProductDetails(productid)
+        const ProuctDetailjson = JSON.parse(ProductDetails)
         // const currentDate = new Date().toDateString();
-        getpro.data.Product.timeline['logistics'] = location;
-        const body = getpro.data;
-        const addproduct =await axios.post("http://localhost:8080/api/addproductdetails",{"productID" : productid ,"jsonData":body});
+        ProuctDetailjson.Product.timeline['logistics'] = location;
+        const jsonData = JSON.stringify(ProuctDetailjson)
+        const addproduct = await addProductDetails(productid, jsonData);
         console.log(body)
         toast.success("Successfully Check In")
       }
@@ -79,11 +44,11 @@ export default () => {
 
 
     const fetchapi= async()=>{
-      const res = await axios.post("http://localhost:8080/api/getlogisticsdashboard",{
-          "Id" : auth.user.id
-      })
-      console.log(res)
-      setTabledata(res.data)
+      const {getLogisticsDashboardDetails } = await contractFunction();
+      const logid = auth.user.id
+      const tabledata = await getLogisticsDashboardDetails(logid)
+      console.log(tabledata)
+      setTabledata(tabledata)
   }
   
   useEffect(()=>{
