@@ -1,0 +1,18 @@
+{
+  "Product": {
+    "ProductID": "65be3569e13c259bb17380c2",
+    "ProductName": "Rolex Watch",
+    "Description": "Very nice watch with ruby embeded",
+    "price": "2124",
+    "Manufacturer": {
+      "ManufacturerName": "manufacturer",
+      "ManufacturerEmail": "manufacturer01@gmail.com"
+    },
+    "Distribution": {
+      "Distributoremail": "distrubutor@gmail.com"
+    },
+    "timeline": {
+      "manufacturer": "2024-02-03T12:45:32.099Z"
+    }
+  }
+}

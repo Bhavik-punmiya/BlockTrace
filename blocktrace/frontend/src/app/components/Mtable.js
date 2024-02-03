@@ -3,60 +3,64 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from '../context/auth'
 import toast, { Toaster } from "react-hot-toast";
+require('dotenv').config();
+import abi from '../constants/abi.js'
+import {ethers} from "ethers";
+const { JsonRpcProvider } = require('ethers/providers');
+import contractFunction from "../constants/contract.js";
 
 export default () => {
-    const[name,setName]=useState('')
-    const[price,setPrice]=useState('')
-    const[description,setDescription]=useState('')
-    const[distributor,setDistributor]=useState('')
-    const[tabledata,setTabledata]=useState();
-    const[auth]=useAuth()
+const[name,setName]=useState('') 
+const[price,setPrice]=useState('')
+const[description,setDescription]=useState('')
+const[distributor,setDistributor]=useState('')
+const[tabledata,setTabledata]=useState();
+const[auth]=useAuth()
+    
 
-
-
- const handleaddproduct =async  ()=>{
-     
+const handleaddproduct = async  ()=>{
+const { addProductDetails , addManufacturerDashboardDetails, addDistributorDashboardDetails } = await contractFunction();
 try{
- const res =await axios.get("http://localhost:8080/v1/auth/generateproduct");
+const res =await axios.get("http://localhost:8080/v1/auth/generateproduct");
 console.log(res.data)
- let body= {
-"productID":res.data.keys._id,
- "jsonData": {Product: {
-      ProductID: res.data.keys._id,
-      ProductName: name,
-      Description: description,
-      price:price,
-      Manufacturer: {
-          ManufacturerName: auth.user.name,
-          ManufacturerEmail: auth.user.email
-      },
-      Distribution: {
-        Distributoremail: distributor,
+const productid = res.data.keys._id
+const jsonData = { Product: {
+    ProductID: res.data.keys._id,
+    ProductName: name,
+    Description: description,
+    price:price,
+    Manufacturer: {
+        ManufacturerName: auth.user.name,
+        ManufacturerEmail: auth.user.email
     },
-    timeline:{
-      
-    }
-      
-    }
-   }
- }
- const timelineKey = new Date().toISOString(); // Example: using ISO string as a key
- body.jsonData.Product.timeline['manufacturer'] = timelineKey;
- const addproduct =await axios.post("http://localhost:8080/api/addproductdetails",body);  
- console.log(body)
+    Distribution: {
+      Distributoremail: distributor,
+  },
+  timeline:{
+    
+  }
+}
+}
 
- const dash = await axios.post("http://localhost:8080/api/addmanufacturerdashboard",{
-    "Id" : auth.user.id,
-    "dashboardData" : [name,res.data.keys._id,res.data.keys.createdAt,price,distributor]
-})  
-console.log(dash.data);
+const timelineKey = new Date().toISOString(); // Example: using ISO string as a key
+jsonData.Product.timeline['manufacturer'] = timelineKey;
+const data = JSON.stringify(jsonData)
 
-const did=await axios.post("http://localhost:8080/v1/auth/getkeyofuser",{"email":distributor});
+ 
+ 
+const addDetails = await addProductDetails(productid, data);
+console.log(data)
 
-const distdash = await axios.post("http://localhost:8080/api/adddistributordashboard",{
-    "Id":did.data.user.id,
-    "dashboardData" : [name,res.data.keys._id,res.data.keys.createdAt,price]
-})
+const manufacturerRow  = [name,res.data.keys._id,res.data.keys.createdAt,price,distributor]
+const userID = auth.user.id
+const dash = await addManufacturerDashboardDetails(manufacturerRow, userID)
+console.log(dash);
+console.log(distributor)
+const didres =  await axios.post("http://localhost:8080/v1/auth/getkeyofuser",{"email":distributor});
+const did = didres.data.user.id
+const distributorRow = [name,res.data.keys._id,res.data.keys.createdAt,price]
+const distdash = await addDistributorDashboardDetails(distributorRow, did)
+console.log(distdash)
  
  toast.success("Product Added Successfully") ;
 }
@@ -68,11 +72,14 @@ const distdash = await axios.post("http://localhost:8080/api/adddistributordashb
 }
 
 const fetchapi= async()=>{
-    const res = await axios.post("http://localhost:8080/api/getmanufacturerdashboard",{
-        "Id" : auth.user.id
-    })
-    console.log(res)
-    setTabledata(res.data)
+    const {getProductDetails, getManufacturerUserDashboardDetails} = await contractFunction();
+    const productdetails = await getProductDetails("65be2cdee13c259bb17380bf");
+    const userID = auth.user.id
+    console.log(productdetails)
+    console.log(auth.user.id)
+
+    const manufacturerDashboard = await getManufacturerUserDashboardDetails(userID)
+    setTabledata(manufacturerDashboard)
 }
 
 useEffect(()=>{

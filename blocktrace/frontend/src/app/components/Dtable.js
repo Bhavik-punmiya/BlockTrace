@@ -4,6 +4,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from '../context/auth'
 import toast, { Toaster } from "react-hot-toast";
+require('dotenv').config();
+import abi from '../constants/abi.js'
+import {ethers} from "ethers";
+const { JsonRpcProvider } = require('ethers/providers');
+import contractFunction from "../constants/contract.js";
 
 
 export default () => {
@@ -15,33 +20,23 @@ export default () => {
     const[tabledata,setTabledata]=useState();
   
 
-    const handleshipment = async(productid,distributor)=>{
-     
-      try{
-      
-   let getpro = await axios.post("http://localhost:8080/api/getproductdetails",
-   {  
-       "productID" : productid
-         
-      });
-      console.log(getpro.data);
+  const handleshipment = async(productid,distributor)=>{
+    const {addProductDetails, getProductDetails, addLogisticsDashboardDetails } = await contractFunction();
+  try{
+      console.log(productid)
+      const getproduct = await getProductDetails(productid);
+      const Product = await  JSON.parse(getproduct)
+      console.log(Product.Product.timeline);
        const currentDate = new Date().toDateString();
-       getpro.data.Product.timeline['distributor'] = currentDate;
-       getpro.data.Product['customeremail']=customer;
-       const body = getpro.data;
+       Product.Product.timeline['distributor'] = currentDate;
+       Product.Product['customeremail']=customer;
+       const jsonData = JSON.stringify(Product)
+       const addprouct = await addProductDetails(productid, jsonData)
 
-       const addproduct =await axios.post("http://localhost:8080/api/addproductdetails",{ "productID" : productid,"jsonData":body});  
-       
-
-
-       const did=await axios.post("http://localhost:8080/v1/auth/getkeyofuser",{"email":logistic});
-
-       const dash = await axios.post("http://localhost:8080/api/addlogisticsdashboard",{
-        "Id":did.data.user.id,
-        "dashboardData" : [customer,productid,customeradd,currentDate]
-      })  
-      console.log(dash);
- 
+       const logres =await axios.post("http://localhost:8080/v1/auth/getkeyofuser",{"email":logistic});
+       const logid = logres.data.user.id
+       const dashboardData = [customer,productid,customeradd,currentDate]
+       const dash = await addLogisticsDashboardDetails(dashboardData, logid)
        toast.success("Product Shipped Successfully") ;
       }
   catch(err){
@@ -50,13 +45,14 @@ export default () => {
        }
       }
       
-      const fetchapi= async()=>{
-          const res = await axios.post("http://localhost:8080/api/getdistributordashboard",{
-              "Id" : auth.user.id
-          })
-          console.log(res.data)
-          setTabledata(res.data)
-      }
+  const fetchapi= async()=>{
+          const {getDistributorUserDashboardDetails} = await contractFunction();
+
+          const userID = auth.user.id
+          const disdash = await getDistributorUserDashboardDetails(userID)
+          console.log(userID)
+          setTabledata(disdash)
+    }
       
       useEffect(()=>{
        fetchapi();

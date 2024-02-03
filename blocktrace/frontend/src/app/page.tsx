@@ -5,7 +5,7 @@ import Footer from './components/Footer.js'
 import { useEffect, useState } from 'react'
 import { useAuth } from './context/auth.js'
 import { useRouter } from 'next/navigation.js'
- 
+require('dotenv').config();
 
 export default function Home() {
        const [state, setState] = useState(false)

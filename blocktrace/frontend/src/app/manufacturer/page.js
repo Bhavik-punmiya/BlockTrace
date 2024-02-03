@@ -6,7 +6,7 @@ import Footer from '../components/Footer.js'
 import Mtable from '../components/Mtable.js'
 import Mcharts from '../components/Mcharts.js'
 import { useState } from "react"
-
+require('dotenv').config();
 
 
 

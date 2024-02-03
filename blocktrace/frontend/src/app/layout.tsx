@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import toast, { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/auth.js';
+require('dotenv').config();
 
 const inter = Inter({ subsets: ['latin'] })
 

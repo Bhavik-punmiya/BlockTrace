@@ -1,6 +1,7 @@
 const { ethers } = require('ethers');
 const fs = require('fs');
 require('dotenv').config();
+
 const { JsonRpcProvider } = require('ethers/providers');
 
 const privateKey = process.env.PRIVATE_KEY;
@@ -68,7 +69,7 @@ async function addProductDetails(productID, ipfsHash, imageHash) {
  async function getProductIpfsHash(userID) {
     try {
         const IpfsProductHashfromchain = await contract.getProductIpfsHash(userID);
-        console.log("Manufacturer user dashboard: ", IpfsProductHashfromchain);
+        console.log("product details ", IpfsProductHashfromchain);
         return IpfsProductHashfromchain;
     } catch (error) {
         console.error("Error getting manufacturer user dashboard: ", error);

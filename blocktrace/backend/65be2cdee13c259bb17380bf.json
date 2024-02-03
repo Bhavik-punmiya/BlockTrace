@@ -1,0 +1,18 @@
+{
+  "Product": {
+    "ProductID": "65be2cdee13c259bb17380bf",
+    "ProductName": "Bhavik",
+    "Description": "distrubutor@gmail.com",
+    "price": "121",
+    "Manufacturer": {
+      "ManufacturerName": "manufacturer",
+      "ManufacturerEmail": "manufacturer01@gmail.com"
+    },
+    "Distribution": {
+      "Distributoremail": "distrubutor@gmail.com"
+    },
+    "timeline": {
+      "manufacturer": "2024-02-03T12:09:05.210Z"
+    }
+  }
+}

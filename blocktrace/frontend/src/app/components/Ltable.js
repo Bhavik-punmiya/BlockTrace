@@ -87,7 +87,6 @@ export default () => {
   }
   
   useEffect(()=>{
-    
    fetchapi();
   },[auth])
   
