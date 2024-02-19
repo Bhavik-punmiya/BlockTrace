@@ -8,6 +8,7 @@ import abi from '../constants/abi.js'
 import {ethers} from "ethers";
 const { JsonRpcProvider } = require('ethers/providers');
 import contractFunction from "../constants/contract.js";
+import CryptoJS from 'crypto-js';
 
 export default () => {
 const[name,setName]=useState('') 
@@ -16,6 +17,8 @@ const[description,setDescription]=useState('')
 const[distributor,setDistributor]=useState('')
 const[tabledata,setTabledata]=useState();
 const[auth]=useAuth()
+const [encryptedText, setEncryptedText] = useState('');
+const [decryptedText, setDecryptedText] = useState('');
     
 
 const handleaddproduct = async  ()=>{
@@ -44,10 +47,7 @@ const jsonData = { Product: {
 
 const timelineKey = new Date().toISOString(); // Example: using ISO string as a key
 jsonData.Product.timeline['manufacturer'] = timelineKey;
-const data = JSON.stringify(jsonData)
-
- 
- 
+const data=handleEncrypt(jsonData); 
 const addDetails = await addProductDetails(productid, data);
 console.log(data)
 
@@ -70,6 +70,18 @@ console.log(distdash)
   toast.error("Unable Added Product");
  }
 }
+const handleEncrypt = (data) => {
+  const encrypted = CryptoJS.AES.encrypt(data, secretKey).toString();
+  setEncryptedText(encrypted);
+  return encryptedText
+};
+
+const handleDecrypt = (data) => {
+  const bytes = CryptoJS.AES.decrypt(data, secretKey);
+  const originalText = bytes.toString(CryptoJS.enc.Utf8);
+  setDecryptedText(originalText);
+  return decryptedText;
+};
 
 const fetchapi= async()=>{
     const {getProductDetails, getManufacturerUserDashboardDetails} = await contractFunction();

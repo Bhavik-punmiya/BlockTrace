@@ -26,7 +26,6 @@ const router = useRouter();
     console.error(err)
   }
 
-
   return (
     <div className='w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-auto p-10 flex flex-col justify-center items-center'>
             <div className="flex flex-col items-start w-full mt-2">

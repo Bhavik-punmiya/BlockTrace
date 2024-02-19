@@ -11,6 +11,7 @@ import abi from '../constants/abi.js'
 import {ethers} from "ethers";
 const { JsonRpcProvider } = require('ethers/providers');
 import contractFunction from "../constants/contract.js";
+import CryptoJS from 'crypto-js';
 
 
 
@@ -21,15 +22,18 @@ export default () => {
   const[auth]=useAuth()
   const[modaldata,setModaldata]=useState();
   const[tabledata,setTabledata]=useState();
+  const [encryptedText, setEncryptedText] = useState('');
+  const [decryptedText, setDecryptedText] = useState('');
   
   const handleCheckin= async (productid)=>{
    const {addProductDetails, getProductDetails} = await contractFunction();
    try { 
     const ProductDetails = await getProductDetails(productid)
-        const ProuctDetailjson = JSON.parse(ProductDetails)
+        const productdet = handleDecrypt(ProductDetails)
+        let ProuctDetailjson = JSON.parse(productdet)
         // const currentDate = new Date().toDateString();
         ProuctDetailjson.Product.timeline['logistics'] = location;
-        const jsonData = JSON.stringify(ProuctDetailjson)
+         const jsonData = handleEncrypt(ProuctDetailjson);
         const addproduct = await addProductDetails(productid, jsonData);
         console.log(body)
         toast.success("Successfully Check In")
@@ -40,7 +44,18 @@ export default () => {
 
    }
 
+   const handleEncrypt = (data) => {
+    const encrypted = CryptoJS.AES.encrypt(data, secretKey).toString();
+    setEncryptedText(encrypted);
+    return encryptedText
+};
 
+const handleDecrypt = (data) => {
+    const bytes = CryptoJS.AES.decrypt(data, secretKey);
+    const originalText = bytes.toString(CryptoJS.enc.Utf8);
+    setDecryptedText(originalText);
+    return decryptedText;
+};
 
 
     const fetchapi= async()=>{

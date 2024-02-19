@@ -9,6 +9,7 @@ import abi from '../constants/abi.js'
 import {ethers} from "ethers";
 const { JsonRpcProvider } = require('ethers/providers');
 import contractFunction from "../constants/contract.js";
+import CryptoJS from 'crypto-js';
 
 
 export default () => {
@@ -18,6 +19,9 @@ export default () => {
     const[logistic,setLogistic]=useState('')
     const[auth]=useAuth()
     const[tabledata,setTabledata]=useState();
+    const [inputText, setInputText] = useState('');
+    const [encryptedText, setEncryptedText] = useState('');
+    const [decryptedText, setDecryptedText] = useState('');
   
 
   const handleshipment = async(productid,distributor)=>{
@@ -25,14 +29,13 @@ export default () => {
   try{
       console.log(productid)
       const getproduct = await getProductDetails(productid);
-      const Product = await  JSON.parse(getproduct)
+       const Product = handleDecrypt(getproduct)
       console.log(Product.Product.timeline);
        const currentDate = new Date().toDateString();
        Product.Product.timeline['distributor'] = currentDate;
        Product.Product['customeremail']=customer;
-       const jsonData = JSON.stringify(Product)
-       const addprouct = await addProductDetails(productid, jsonData)
-
+       const dataString = handleEncrypt(Product)
+       const addprouct = await addProductDetails(productid, dataString)
        const logres =await axios.post("http://localhost:8080/v1/auth/getkeyofuser",{"email":logistic});
        const logid = logres.data.user.id
        const dashboardData = [customer,productid,customeradd,currentDate]
@@ -44,6 +47,19 @@ export default () => {
         toast.error("Unable ship Product");
        }
       }
+    const handleEncrypt = (data) => {
+        const encrypted = CryptoJS.AES.encrypt(data, secretKey).toString();
+        setEncryptedText(encrypted);
+        return encryptedText
+    };
+
+    const handleDecrypt = (data) => {
+        const bytes = CryptoJS.AES.decrypt(data, secretKey);
+        const originalText = bytes.toString(CryptoJS.enc.Utf8);
+        setDecryptedText(originalText);
+        return decryptedText;
+    };
+
       
   const fetchapi= async()=>{
           const {getDistributorUserDashboardDetails} = await contractFunction();
