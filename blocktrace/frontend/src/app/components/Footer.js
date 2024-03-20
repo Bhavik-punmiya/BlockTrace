@@ -76,7 +76,7 @@ export default () => {
                     <div className="max-w-xs">
                         {/* <img src='../../../public/logo.png' className="w-32" /> */}
                         <p className="leading-relaxed mt-2 text-[15px]">
-                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                            BlockTrace a Privacy, Security, Reliability, and Scalable Solution for your Business..
                         </p>
                     </div>
                     <form 
