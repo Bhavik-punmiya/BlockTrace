@@ -14,37 +14,13 @@ import CryptoJS from 'crypto-js';
 function page() {
     const [productd, setProductd] = useState('');
     const [steps, setSteps] = useState({
-        stepsItems: ["Manufacturer", "Distributor", "Logistic", "Consumer"],
+        stepsItems: ["Manufacturer", "Distributor", "Logistics", "Consumer"],
         currentStep: 0
     });
 
-    const [decryptedText, setDecryptedText] = useState('');
-
     const params = useParams();
     const [state, setState] = useState(false);
-   
-        const fetchapi = async () => {
-            const { getProductDetails } = await contractFunction();
-            const id = params.id;
-            console.log(id)
-            const data = await getProductDetails(id);
-            console.log('inside view product'+data)
-            const jsondata = await handleDecrypt(id, data);
-
-            setProductd(JSON.parse(jsondata));
-            const timeline = productd?.Product?.timeline;
-            console.log('TimeLine added');
-            console.log(jsondata);
-            if (timeline) {
-                const completedSteps = calculateCompletedSteps(timeline);
-                setSteps(prev => ({ ...prev, currentStep: completedSteps }));
-            }
-
-            
-        };
-
-    
-
+    const [decryptedText, setDecryptedText] = useState('');
 
     const calculateCompletedSteps = (timeline) => {
         const stepOrder = ["manufacturer", "distributor", "logistics", "consumer"];
@@ -56,33 +32,22 @@ function page() {
 
         return completedSteps;
     };
-    const stepToTimelineKey = {
-        "Manufacturer": "manufacturer",
-        "Distributor": "distributor",
-        "Logistic": "logistics", // Adjusted key for 'Logistic'
-        "Consumer": "consumer"
-    };
 
-    const jsonData = {
-        "Product": {
-            "ProductID": "65f424c6e1dd19d6135a464d",
-            "ProductName": "Sony TV",
-            "Description": "OLED Screen",
-            "price": "340",
-            "Manufacturer": {
-                "ManufacturerName": "manufacturer",
-                "ManufacturerEmail": "manufacturer@gmail.com"
-            },
-            "Distribution": {
-                "Distributoremail": "distributor@gmail.com"
-            },
-            "timeline": {
-                "manufacturer": "2024-03-15T10:36:54.594Z"
-            }
+    const fetchapi = async () => {
+        const { getProductDetails } = await contractFunction();
+        const id = params.id;
+        const data = await getProductDetails(id);
+        const jsondata = await handleDecrypt(id, data);
+
+        const productData = JSON.parse(jsondata);
+        setProductd(productData);
+
+        const timeline = productData?.Product?.timeline;
+        if (timeline) {
+            const completedSteps = calculateCompletedSteps(timeline);
+            setSteps(prev => ({ ...prev, currentStep: completedSteps }));
         }
     };
-    
-
     const handleDecrypt = async (productid, encryptedBase64) => {
         const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
         const secretKey = secretKeyResponse.data.key;
@@ -94,98 +59,21 @@ function page() {
         return originalText
     };
 
-
-    // const handleDecrypt = async (productid, encryptedBase64) => {
-    //     try {
-    //         // Get the secret key
-    //         const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
-    //         const secretKey = secretKeyResponse.data.key;
-    //         console.log("Key:", secretKey);
-    
-    //         // Decode Base64 and convert it back to ciphertext
-    //         const encrypted = await  CryptoJS.enc.Base64.parse(encryptedBase64);
-    
-    //         // Decrypt using AES
-    //         const decrypted = await CryptoJS.AES.decrypt (encrypted, secretKey);
-    //         console.log(decrypted)
-    //         // Convert the decrypted bytes to a string
-    //         const decryptedText = await decrypted.toString(CryptoJS.enc.Utf8);
-    //         console.log('Decrypted Text:', decryptedText);
-    
-    //         // Set the decrypted text
-    //         setDecryptedText(decryptedText);
-    
-    //         return decryptedText;
-    //     } catch (error) {
-    //         console.error("Decryption Error:", error);
-    //         // Handle error appropriately
-    //         throw error;
-    //     }
-        
-    //     // Encrypt the data
-    //     const encryptedData = encryptData(jsonData);
-    //     console.log("Encrypted data:", encryptedData);
-        
-    //     // Decrypt the encrypted data
-    //     const decryptedData = decryptData(encryptedData);
-    //     console.log("Decrypted data:", decryptedData);
-
-    //     function encryptData(data) {
-    //         // Hardcoded key
-    //         const key = "ThisIsASecretKey123";
-        
-    //         // Convert the JSON data to a string
-    //         const jsonData = JSON.stringify(data);
-            
-    //         // Convert the key to a WordArray
-    //         const encryptedKey = CryptoJS.enc.Utf8.parse(key);
-        
-    //         // Encrypt the data using AES algorithm
-    //         const encryptedData = CryptoJS.AES.encrypt(jsonData, encryptedKey, {
-    //             mode: CryptoJS.mode.ECB,
-    //             padding: CryptoJS.pad.Pkcs7
-    //         });
-        
-    //         // Return the encrypted data as a base64 encoded string
-    //         return encryptedData.toString();
-    //     }
-        
-    //     // Function to decrypt the encrypted data
-    //     function decryptData(encryptedData) {
-    //         // Hardcoded key
-    //         const key = "ThisIsASecretKey123";
-        
-    //         // Convert the key to a WordArray
-    //         const decryptedKey = CryptoJS.enc.Utf8.parse(key);
-        
-    //         // Decrypt the data using AES algorithm
-    //         const decryptedData = CryptoJS.AES.decrypt(encryptedData, decryptedKey, {
-    //             mode: CryptoJS.mode.ECB,
-    //             padding: CryptoJS.pad.Pkcs7
-    //         });
-        
-    //         // Convert the decrypted data to a string and parse it to JSON
-    //         const jsonData = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8));
-        
-    //         // Return the decrypted JSON data
-    //         return jsonData;
-    //     }
-        
-    //     // Usage example
-
-
-    // };
-    
-    
-    
-
-    useEffect(()=>{
+    useEffect(() => {
         fetchapi();
-    },[])
+    }, [params.id]); // Dependency array ensures fetchapi is called when params.id changes
+
+    const stepToTimelineKey = {
+        "Manufacturer": "manufacturer",
+        "Distributor": "distributor",
+        "Logistics": "logistics",
+        "Consumer": "consumer"
+    };
+
 
   return (
-    <div>
-      <header className="text-base lg:text-sm">
+    <div className='bg-white'>
+      <header className="text-base lg:text-sm border-b-2" >
         <div className={`bg-white items-center gap-x-14 px-4 max-w-screen-xl mx-auto lg:flex lg:px-8 lg:static ${state ? "h-full fixed inset-x-0" : ""}`}>
             <div className="flex items-center justify-between py-3 lg:py-5 lg:block">
                 <p className='text-blue-800 text-lg font-bold'>BlockTrace</p>
@@ -215,7 +103,7 @@ function page() {
    
     </header>
      
-    <div class="w-1/2 rounded-lg border border-blue-500 py-10 shadow-sm mx-auto my-10 p-10">
+    <div class="w-1/2 rounded-lg border border-blue-500 py-10 shadow-sm mx-auto my-10 p-10 bg-white">
   <dl class="-my-3 divide-y divide-gray-100 text-sm">
     <div class="grid grid-cols-1 gap-1 p-3 sm:grid-cols-3 sm:gap-4">
       <dt class="font-medium text-gray-900">Product ID :</dt>
@@ -264,31 +152,31 @@ function page() {
 
 
 
-    <div class="w-full my-10">
-    <div className="max-w-2xl mx-auto px-4 md:px-0">
-                <ul aria-label="Steps" className="text-gray-600 font-medium md:flex md:justify-between">
-                    {steps.stepsItems.map((item, idx) => (
-                        <li key={idx} className="flex flex-col items-center md:flex-1">
-                            <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center mb-2 ${steps.currentStep > idx ? "bg-indigo-600 border-indigo-600" : steps.currentStep === idx ? "border-indigo-600" : "border-gray-300"}`}>
-                                {steps.currentStep > idx ? (
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                    </svg>
-                                ) : (
-                                    <span className="text-sm font-semibold text-gray-700">{idx + 1}</span>
-                                )}
-                            </div>
-                            <h3 className={`text-sm mb-1 ${steps.currentStep === idx ? "text-indigo-600 font-bold" : "text-gray-500"}`}>
-                                {item}
-                            </h3>
-                            <p className="text-xs text-gray-500 text-center">
-                                {productd?.Product?.timeline[stepToTimelineKey[item]]}
-                            </p>
-                        </li>
-                    ))}
-                </ul>
+     <div className="w-full my-10 ">
+                <div className="max-w-2xl pt-10 mx-auto px-4 md:px-0">
+                    <ul aria-label="Steps" className="text-white-600 font-medium md:flex md:justify-between">
+                        {steps.stepsItems.map((item, idx) => (
+                            <li key={idx} className="flex flex-col items-center md:flex-1">
+                                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center mb-2 ${steps.currentStep > idx ? "bg-indigo-600 border-indigo-600" : steps.currentStep === idx ? "bg-indigo-500 border-indigo-600" : "bg-white border-gray-300"}`}>
+                                    {steps.currentStep > idx ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    ) : (
+                                        <span className="text-sm font-semibold text-gray-700">{idx + 1}</span>
+                                    )}
+                                </div>
+                                <h3 className={`text-sm mb-1 ${steps.currentStep === idx ? "text-indigo-600 font-bold" : "text-gray-500"}`}>
+                                    {item}
+                                </h3>
+                                <p className="text-xs text-gray-500 text-center">
+                                    {productd?.Product?.timeline?.[stepToTimelineKey[item]]}
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
-    </div>
 
   </dl>
 </div>
