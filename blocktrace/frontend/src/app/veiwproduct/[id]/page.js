@@ -31,8 +31,8 @@ function page() {
             console.log('inside view product'+data)
             const jsondata = await handleDecrypt(id, data);
 
-
-            const timeline = jsondata?.Product?.timeline;
+            setProductd(JSON.parse(jsondata));
+            const timeline = productd?.Product?.timeline;
             console.log('TimeLine added');
             console.log(jsondata);
             if (timeline) {
@@ -40,7 +40,7 @@ function page() {
                 setSteps(prev => ({ ...prev, currentStep: completedSteps }));
             }
 
-            setProductd(jsondata);
+            
         };
 
     
@@ -56,6 +56,13 @@ function page() {
 
         return completedSteps;
     };
+    const stepToTimelineKey = {
+        "Manufacturer": "manufacturer",
+        "Distributor": "distributor",
+        "Logistic": "logistics", // Adjusted key for 'Logistic'
+        "Consumer": "consumer"
+    };
+
     const jsonData = {
         "Product": {
             "ProductID": "65f424c6e1dd19d6135a464d",
