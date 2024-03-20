@@ -19,7 +19,7 @@ const[tabledata,setTabledata]=useState();
 const[auth]=useAuth()
 const [encryptedText, setEncryptedText] = useState('');
 const [decryptedText, setDecryptedText] = useState('');
-    
+   
 
 const handleaddproduct = async  ()=>{
 const { addProductDetails , addManufacturerDashboardDetails, addDistributorDashboardDetails } = await contractFunction();
@@ -27,6 +27,7 @@ try{
 const res =await axios.get("http://localhost:8080/v1/auth/generateproduct");
 console.log(res.data)
 const productid = res.data.keys._id
+
 const jsonData = { Product: {
     ProductID: res.data.keys._id,
     ProductName: name,
@@ -44,12 +45,12 @@ const jsonData = { Product: {
   }
 }
 }
-
-const timelineKey = new Date().toISOString(); // Example: using ISO string as a key
+console.log(jsonData)
+const timelineKey = await new Date().toISOString(); // Example: using ISO string as a key
 jsonData.Product.timeline['manufacturer'] = timelineKey;
-const data=handleEncrypt(jsonData); 
-const addDetails = await addProductDetails(productid, data);
+const data= await handleEncrypt(productid, JSON.stringify(jsonData)); 
 console.log(data)
+const addDetails = await addProductDetails(productid, data);
 
 const manufacturerRow  = [name,res.data.keys._id,res.data.keys.createdAt,price,distributor]
 const userID = auth.user.id
@@ -70,14 +71,20 @@ console.log(distdash)
   toast.error("Unable Added Product");
  }
 }
-const handleEncrypt = (data) => {
-  const encrypted = CryptoJS.AES.encrypt(data, secretKey).toString();
-  setEncryptedText(encrypted);
-  return encryptedText
-};
 
-const handleDecrypt = (data) => {
-  const bytes = CryptoJS.AES.decrypt(data, secretKey);
+
+ 
+const handleEncrypt = async (productid, data) => {
+  const secretKey = await axios.post('http://localhost:8080/v1/auth/getallkeys', {id : productid});
+  const encrypted = CryptoJS.AES.encrypt(data, secretKey.data.key);
+  const encryptedBase64 = encrypted.toString();
+  setEncryptedText(encryptedBase64);
+  return encryptedBase64;
+ };
+ 
+const handleDecrypt = async (productid, data) => {
+  const secretKey = await axios.post('http://localhost:8080/v1/auth/getallkeys', {id : productid})
+  const bytes = CryptoJS.AES.decrypt(data, secretKey.data.key);
   const originalText = bytes.toString(CryptoJS.enc.Utf8);
   setDecryptedText(originalText);
   return decryptedText;

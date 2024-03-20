@@ -10,6 +10,6 @@ router.post('/register',registerController);
 router.post('/login',loginController);
 router.get('/test',requireSignIn,isAdmin,testController);
 router.get('/generateproduct',generateproductController)
-router.get('/getallkeys',keyController);
+router.post('/getallkeys',keyController);
 router.post('/getkeyofuser',getkeybyemail);
 module.exports = router;

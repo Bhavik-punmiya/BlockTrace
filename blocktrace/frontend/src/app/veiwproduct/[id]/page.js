@@ -1,63 +1,167 @@
 'use client'
 
-import React, { useEffect } from 'react'
-import Footer from '../../components/Footer'
-import { useState } from "react"
-import {QRCodeSVG} from 'qrcode.react';
+import React, { useEffect, useState } from 'react';
+import Footer from '../../components/Footer';
+import { QRCodeSVG } from 'qrcode.react';
 import axios from 'axios';
-import { useParams } from 'next/navigation'
+import { useParams } from 'next/navigation';
+import contractFunction from "../../constants/contract.js";
+import abi from '../../constants/abi.js';
+import { ethers } from "ethers";
+const { JsonRpcProvider } = require('ethers/providers');
+import CryptoJS from 'crypto-js';
 
 function page() {
-    const[productd,setProductd]=useState('');
+    const [productd, setProductd] = useState('');
     const [steps, setSteps] = useState({
         stepsItems: ["Manufacturer", "Distributor", "Logistic", "Consumer"],
         currentStep: 0
     });
 
+    const [decryptedText, setDecryptedText] = useState('');
+
     const params = useParams();
-    const [state, setState] = useState(false)
+    const [state, setState] = useState(false);
+   
+        const fetchapi = async () => {
+            const { getProductDetails } = await contractFunction();
+            const id = params.id;
+            console.log(id)
+            const data = await getProductDetails(id);
+            console.log('inside view product'+data)
+            const jsondata = await handleDecrypt(id, data);
+            console.log(jsondata);
+
+            const timeline = jsondata?.Product?.timeline;
+            console.log('TimeLine added');
+            console.log(jsondata);
+            if (timeline) {
+                const completedSteps = calculateCompletedSteps(timeline);
+                setSteps(prev => ({ ...prev, currentStep: completedSteps }));
+            }
+
+            setProductd(jsondata);
+        };
+
+    
+
+
     const calculateCompletedSteps = (timeline) => {
-        const stepOrder = ["manufacturer", "distributor", "logistics", "consumer"]; // Include 'consumer' if it appears in the timeline
+        const stepOrder = ["manufacturer", "distributor", "logistics", "consumer"];
         let completedSteps = stepOrder.reduce((acc, step) => timeline[step] ? acc + 1 : acc, 0);
 
-        // If all previous steps are completed but 'consumer' step data is not in timeline, mark 'consumer' as the current step
         if (completedSteps === stepOrder.length - 1 && !timeline["consumer"]) {
             completedSteps = stepOrder.length - 1;
         }
 
         return completedSteps;
     };
-    const stepToTimelineKey = {
-        "Manufacturer": "manufacturer",
-        "Distributor": "distributor",
-        "Logistic": "logistics", // Adjusted key for 'Logistic'
-        "Consumer": "consumer"
+    const jsonData = {
+        "Product": {
+            "ProductID": "65f424c6e1dd19d6135a464d",
+            "ProductName": "Sony TV",
+            "Description": "OLED Screen",
+            "price": "340",
+            "Manufacturer": {
+                "ManufacturerName": "manufacturer",
+                "ManufacturerEmail": "manufacturer@gmail.com"
+            },
+            "Distribution": {
+                "Distributoremail": "distributor@gmail.com"
+            },
+            "timeline": {
+                "manufacturer": "2024-03-15T10:36:54.594Z"
+            }
+        }
     };
+    const handleDecrypt = async (productid, encryptedBase64) => {
+        try {
+            // Get the secret key
+            const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
+            const secretKey = secretKeyResponse.data.key;
+            console.log("Key:", secretKey);
+    
+            // Decode Base64 and convert it back to ciphertext
+            const encrypted = await  CryptoJS.enc.Base64.parse(encryptedBase64);
+    
+            // Decrypt using AES
+            const decrypted = await CryptoJS.AES.decrypt (encrypted, secretKey);
+            console.log(decrypted)
+            // Convert the decrypted bytes to a string
+            const decryptedText = await decrypted.toString(CryptoJS.enc.Utf8);
+            console.log('Decrypted Text:', decryptedText);
+    
+            // Set the decrypted text
+            setDecryptedText(decryptedText);
+    
+            return decryptedText;
+        } catch (error) {
+            console.error("Decryption Error:", error);
+            // Handle error appropriately
+            throw error;
+        }
+        
+        // Encrypt the data
+        const encryptedData = encryptData(jsonData);
+        console.log("Encrypted data:", encryptedData);
+        
+        // Decrypt the encrypted data
+        const decryptedData = decryptData(encryptedData);
+        console.log("Decrypted data:", decryptedData);
 
-   const fetchapi=async ()=>{
-    const res = await axios.post("http://localhost:8080/api/getproductdetails",
-    {  
-        "productID" : params.id
-          
-       });
-      
+        function encryptData(data) {
+            // Hardcoded key
+            const key = "ThisIsASecretKey123";
+        
+            // Convert the JSON data to a string
+            const jsonData = JSON.stringify(data);
+            
+            // Convert the key to a WordArray
+            const encryptedKey = CryptoJS.enc.Utf8.parse(key);
+        
+            // Encrypt the data using AES algorithm
+            const encryptedData = CryptoJS.AES.encrypt(jsonData, encryptedKey, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+        
+            // Return the encrypted data as a base64 encoded string
+            return encryptedData.toString();
+        }
+        
+        // Function to decrypt the encrypted data
+        function decryptData(encryptedData) {
+            // Hardcoded key
+            const key = "ThisIsASecretKey123";
+        
+            // Convert the key to a WordArray
+            const decryptedKey = CryptoJS.enc.Utf8.parse(key);
+        
+            // Decrypt the data using AES algorithm
+            const decryptedData = CryptoJS.AES.decrypt(encryptedData, decryptedKey, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+        
+            // Convert the decrypted data to a string and parse it to JSON
+            const jsonData = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8));
+        
+            // Return the decrypted JSON data
+            return jsonData;
+        }
+        
+        // Usage example
 
-    const timeline = res.data?.Product?.timeline;
-    if (timeline) {
-        const completedSteps = calculateCompletedSteps(timeline);
-        setSteps(prev => ({ ...prev, currentStep: completedSteps }));
-    }
 
+    };
+    
+    
+    
 
-    console.log(res.data)
-    setProductd(res.data)
-   }
+    useEffect(()=>{
+        fetchapi();
+    },[])
 
-
-
-   useEffect(()=>{
-    fetchapi();
-   },[])
   return (
     <div>
       <header className="text-base lg:text-sm">

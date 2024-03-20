@@ -147,14 +147,12 @@ const loginController= async (req,res)=>{
  const keyController= async (req,res)=>{
 
    try{
-      
-      const keys = await keyschema.find();
-      
+      const id = req.body.id
+      const keys = await keyschema.findOne({_id:id});
        res.status(200).send({
          success:true,
          message:"Keys fetched Successfully",
-         keys
-        
+         key : keys.key 
        })
        
    }
