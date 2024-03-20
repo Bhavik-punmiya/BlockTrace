@@ -15,7 +15,7 @@ function Distributor() {
    
     
     const submenuNav = [
-        { title: "Dashbroad" },
+        { title: "Dashboard" },
     ]
   return (
     <div className=''>

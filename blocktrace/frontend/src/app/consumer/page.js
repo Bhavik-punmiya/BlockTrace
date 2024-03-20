@@ -11,7 +11,7 @@ export default function page() {
    
     
     const submenuNav = [
-        { title: "Dashbroad" },
+        { title: "Dashboard" },
     ]
   return (
     <div>
