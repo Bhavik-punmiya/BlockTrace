@@ -74,86 +74,99 @@ function page() {
             }
         }
     };
+    
+
     const handleDecrypt = async (productid, encryptedBase64) => {
-        try {
-            // Get the secret key
-            const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
+        const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
             const secretKey = secretKeyResponse.data.key;
             console.log("Key:", secretKey);
-    
-            // Decode Base64 and convert it back to ciphertext
-            const encrypted = await  CryptoJS.enc.Base64.parse(encryptedBase64);
-    
-            // Decrypt using AES
-            const decrypted = await CryptoJS.AES.decrypt (encrypted, secretKey);
-            console.log(decrypted)
-            // Convert the decrypted bytes to a string
-            const decryptedText = await decrypted.toString(CryptoJS.enc.Utf8);
-            console.log('Decrypted Text:', decryptedText);
-    
-            // Set the decrypted text
-            setDecryptedText(decryptedText);
-    
-            return decryptedText;
-        } catch (error) {
-            console.error("Decryption Error:", error);
-            // Handle error appropriately
-            throw error;
-        }
-        
-        // Encrypt the data
-        const encryptedData = encryptData(jsonData);
-        console.log("Encrypted data:", encryptedData);
-        
-        // Decrypt the encrypted data
-        const decryptedData = decryptData(encryptedData);
-        console.log("Decrypted data:", decryptedData);
-
-        function encryptData(data) {
-            // Hardcoded key
-            const key = "ThisIsASecretKey123";
-        
-            // Convert the JSON data to a string
-            const jsonData = JSON.stringify(data);
-            
-            // Convert the key to a WordArray
-            const encryptedKey = CryptoJS.enc.Utf8.parse(key);
-        
-            // Encrypt the data using AES algorithm
-            const encryptedData = CryptoJS.AES.encrypt(jsonData, encryptedKey, {
-                mode: CryptoJS.mode.ECB,
-                padding: CryptoJS.pad.Pkcs7
-            });
-        
-            // Return the encrypted data as a base64 encoded string
-            return encryptedData.toString();
-        }
-        
-        // Function to decrypt the encrypted data
-        function decryptData(encryptedData) {
-            // Hardcoded key
-            const key = "ThisIsASecretKey123";
-        
-            // Convert the key to a WordArray
-            const decryptedKey = CryptoJS.enc.Utf8.parse(key);
-        
-            // Decrypt the data using AES algorithm
-            const decryptedData = CryptoJS.AES.decrypt(encryptedData, decryptedKey, {
-                mode: CryptoJS.mode.ECB,
-                padding: CryptoJS.pad.Pkcs7
-            });
-        
-            // Convert the decrypted data to a string and parse it to JSON
-            const jsonData = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8));
-        
-            // Return the decrypted JSON data
-            return jsonData;
-        }
-        
-        // Usage example
-
-
+        const bytes = CryptoJS.AES.decrypt(encryptedBase64, secretKey);
+        const originalText = bytes.toString(CryptoJS.enc.Utf8);
+        setDecryptedText(originalText);
+        console.log(decryptedText);
     };
+
+
+    // const handleDecrypt = async (productid, encryptedBase64) => {
+    //     try {
+    //         // Get the secret key
+    //         const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
+    //         const secretKey = secretKeyResponse.data.key;
+    //         console.log("Key:", secretKey);
+    
+    //         // Decode Base64 and convert it back to ciphertext
+    //         const encrypted = await  CryptoJS.enc.Base64.parse(encryptedBase64);
+    
+    //         // Decrypt using AES
+    //         const decrypted = await CryptoJS.AES.decrypt (encrypted, secretKey);
+    //         console.log(decrypted)
+    //         // Convert the decrypted bytes to a string
+    //         const decryptedText = await decrypted.toString(CryptoJS.enc.Utf8);
+    //         console.log('Decrypted Text:', decryptedText);
+    
+    //         // Set the decrypted text
+    //         setDecryptedText(decryptedText);
+    
+    //         return decryptedText;
+    //     } catch (error) {
+    //         console.error("Decryption Error:", error);
+    //         // Handle error appropriately
+    //         throw error;
+    //     }
+        
+    //     // Encrypt the data
+    //     const encryptedData = encryptData(jsonData);
+    //     console.log("Encrypted data:", encryptedData);
+        
+    //     // Decrypt the encrypted data
+    //     const decryptedData = decryptData(encryptedData);
+    //     console.log("Decrypted data:", decryptedData);
+
+    //     function encryptData(data) {
+    //         // Hardcoded key
+    //         const key = "ThisIsASecretKey123";
+        
+    //         // Convert the JSON data to a string
+    //         const jsonData = JSON.stringify(data);
+            
+    //         // Convert the key to a WordArray
+    //         const encryptedKey = CryptoJS.enc.Utf8.parse(key);
+        
+    //         // Encrypt the data using AES algorithm
+    //         const encryptedData = CryptoJS.AES.encrypt(jsonData, encryptedKey, {
+    //             mode: CryptoJS.mode.ECB,
+    //             padding: CryptoJS.pad.Pkcs7
+    //         });
+        
+    //         // Return the encrypted data as a base64 encoded string
+    //         return encryptedData.toString();
+    //     }
+        
+    //     // Function to decrypt the encrypted data
+    //     function decryptData(encryptedData) {
+    //         // Hardcoded key
+    //         const key = "ThisIsASecretKey123";
+        
+    //         // Convert the key to a WordArray
+    //         const decryptedKey = CryptoJS.enc.Utf8.parse(key);
+        
+    //         // Decrypt the data using AES algorithm
+    //         const decryptedData = CryptoJS.AES.decrypt(encryptedData, decryptedKey, {
+    //             mode: CryptoJS.mode.ECB,
+    //             padding: CryptoJS.pad.Pkcs7
+    //         });
+        
+    //         // Convert the decrypted data to a string and parse it to JSON
+    //         const jsonData = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8));
+        
+    //         // Return the decrypted JSON data
+    //         return jsonData;
+    //     }
+        
+    //     // Usage example
+
+
+    // };
     
     
     

@@ -9,7 +9,7 @@ const contractFunction = async () => {
 
     const wallet = new ethers.Wallet(privateKey);
 
-    const provider = new JsonRpcProvider('https://rpc-mumbai.maticvigil.com');
+    const provider = new JsonRpcProvider('https://polygon-mumbai.g.alchemy.com/v2/KOQX0LEMKd-EecJ46piXNKJnp1zhB4YA');
 
     const connectedWallet = wallet.connect(provider);
 

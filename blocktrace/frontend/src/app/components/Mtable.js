@@ -48,7 +48,8 @@ const jsonData = { Product: {
 console.log(jsonData)
 const timelineKey = await new Date().toISOString(); // Example: using ISO string as a key
 jsonData.Product.timeline['manufacturer'] = timelineKey;
-const data= await handleEncrypt(productid, JSON.stringify(jsonData)); 
+console.log('at encrypt data')
+const data= await handleEncrypt(productid, jsonData); 
 console.log(data)
 const addDetails = await addProductDetails(productid, data);
 
@@ -76,10 +77,11 @@ console.log(distdash)
  
 const handleEncrypt = async (productid, data) => {
   const secretKey = await axios.post('http://localhost:8080/v1/auth/getallkeys', {id : productid});
-  const encrypted = CryptoJS.AES.encrypt(data, secretKey.data.key);
-  const encryptedBase64 = encrypted.toString();
-  setEncryptedText(encryptedBase64);
-  return encryptedBase64;
+  const encrypted = await CryptoJS.AES.encrypt(data, secretKey).toString();
+  // const encryptedBase64 = encrypted.toString();
+  setEncryptedText(encrypted);
+  
+  return encrypted;
  };
  
 const handleDecrypt = async (productid, data) => {
