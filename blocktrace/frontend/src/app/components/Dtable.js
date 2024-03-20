@@ -29,12 +29,13 @@ export default () => {
   try{
       console.log(productid)
       const getproduct = await getProductDetails(productid);
-       const Product = handleDecrypt(getproduct)
-      console.log(Product.Product.timeline);
+       let Product = await handleDecrypt(productid, getproduct)
+       
+       console.log(Product.Product.timeline);
        const currentDate = new Date().toDateString();
        Product.Product.timeline['distributor'] = currentDate;
        Product.Product['customeremail']=customer;
-       const dataString = handleEncrypt(Product)
+       const dataString = await handleEncrypt(productid, JSON.stringify(Product))
        const addprouct = await addProductDetails(productid, dataString)
        const logres =await axios.post("http://localhost:8080/v1/auth/getkeyofuser",{"email":logistic});
        const logid = logres.data.user.id
@@ -47,19 +48,27 @@ export default () => {
         toast.error("Unable ship Product");
        }
       }
-    const handleEncrypt = (data) => {
-        const encrypted = CryptoJS.AES.encrypt(data, secretKey).toString();
+      const handleEncrypt = async (productid, data) => {
+        const secretKey = (await axios.post('http://localhost:8080/v1/auth/getallkeys', {id : productid})).data.key;
+        console.log(secretKey)
+        const encrypted = await CryptoJS.AES.encrypt(data, secretKey).toString();
+        console.log(encrypted)
+        // const encryptedBase64 = encrypted.toString();
         setEncryptedText(encrypted);
-        return encryptedText
-    };
+        
+        return encrypted;
+       };
 
-    const handleDecrypt = (data) => {
-        const bytes = CryptoJS.AES.decrypt(data, secretKey);
+    const handleDecrypt = async (productid, encryptedBase64) => {
+        const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
+        const secretKey = secretKeyResponse.data.key;
+        console.log("Key:", secretKey);
+        const bytes = CryptoJS.AES.decrypt(encryptedBase64, secretKey);
         const originalText = bytes.toString(CryptoJS.enc.Utf8);
         setDecryptedText(originalText);
-        return decryptedText;
+        console.log(originalText);
+        return JSON.parse(originalText)
     };
-
       
   const fetchapi= async()=>{
           const {getDistributorUserDashboardDetails} = await contractFunction();

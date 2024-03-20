@@ -29,13 +29,13 @@ export default () => {
    const {addProductDetails, getProductDetails} = await contractFunction();
    try { 
     const ProductDetails = await getProductDetails(productid)
-        const productdet = handleDecrypt(ProductDetails)
-        let ProuctDetailjson = JSON.parse(productdet)
-        // const currentDate = new Date().toDateString();
-        ProuctDetailjson.Product.timeline['logistics'] = location;
-         const jsonData = handleEncrypt(ProuctDetailjson);
-        const addproduct = await addProductDetails(productid, jsonData);
-        console.log(body)
+        let productDetailjson = await  handleDecrypt(productid, ProductDetails)
+
+        const currentDate = new Date().toDateString();
+        productDetailjson.Product.timeline['logistics'] = currentDate+"\n"+location;
+        const Data = await handleEncrypt(productid, JSON.stringify(productDetailjson))
+        const addproduct = await addProductDetails(productid, Data);
+
         toast.success("Successfully Check In")
       }
       catch(err){
@@ -44,17 +44,26 @@ export default () => {
 
    }
 
-   const handleEncrypt = (data) => {
-    const encrypted = CryptoJS.AES.encrypt(data, secretKey).toString();
+   const handleEncrypt = async (productid, data) => {
+    const secretKey = (await axios.post('http://localhost:8080/v1/auth/getallkeys', {id : productid})).data.key;
+    console.log(secretKey)
+    const encrypted = await CryptoJS.AES.encrypt(data, secretKey).toString();
+    console.log(encrypted)
+    // const encryptedBase64 = encrypted.toString();
     setEncryptedText(encrypted);
-    return encryptedText
-};
+    
+    return encrypted;
+   };
 
-const handleDecrypt = (data) => {
-    const bytes = CryptoJS.AES.decrypt(data, secretKey);
+const handleDecrypt = async (productid, encryptedBase64) => {
+    const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
+    const secretKey = secretKeyResponse.data.key;
+    console.log("Key:", secretKey);
+    const bytes = CryptoJS.AES.decrypt(encryptedBase64, secretKey);
     const originalText = bytes.toString(CryptoJS.enc.Utf8);
     setDecryptedText(originalText);
-    return decryptedText;
+    console.log(originalText);
+    return JSON.parse(originalText)
 };
 
 

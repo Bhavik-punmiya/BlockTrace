@@ -67,7 +67,7 @@ console.log(distdash)
  toast.success("Product Added Successfully") ;
 }
 
- catch(err){
+ catch(err){1
   console.log(err);
   toast.error("Unable Added Product");
  }
