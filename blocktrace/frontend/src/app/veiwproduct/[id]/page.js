@@ -30,7 +30,7 @@ function page() {
             const data = await getProductDetails(id);
             console.log('inside view product'+data)
             const jsondata = await handleDecrypt(id, data);
-            console.log(jsondata);
+
 
             const timeline = jsondata?.Product?.timeline;
             console.log('TimeLine added');
@@ -78,12 +78,13 @@ function page() {
 
     const handleDecrypt = async (productid, encryptedBase64) => {
         const secretKeyResponse = await axios.post('http://localhost:8080/v1/auth/getallkeys', { id: productid });
-            const secretKey = secretKeyResponse.data.key;
-            console.log("Key:", secretKey);
+        const secretKey = secretKeyResponse.data.key;
+        console.log("Key:", secretKey);
         const bytes = CryptoJS.AES.decrypt(encryptedBase64, secretKey);
         const originalText = bytes.toString(CryptoJS.enc.Utf8);
         setDecryptedText(originalText);
-        console.log(decryptedText);
+        console.log(originalText);
+        return originalText
     };
 
 
