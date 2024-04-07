@@ -9,7 +9,7 @@ import {ethers} from "ethers";
 const { JsonRpcProvider } = require('ethers/providers');
 import contractFunction from "../constants/contract.js";
 import CryptoJS from 'crypto-js';
-
+import { addProductDetails } from "../constants/contractsolana.js";
 export default () => {
 const[name,setName]=useState('') 
 const[price,setPrice]=useState('')
@@ -22,7 +22,7 @@ const [decryptedText, setDecryptedText] = useState('');
    
 
 const handleaddproduct = async  ()=>{
-const { addProductDetails , addManufacturerDashboardDetails, addDistributorDashboardDetails } = await contractFunction();
+const {  addManufacturerDashboardDetails, addDistributorDashboardDetails } = await contractFunction();
 try{
 const res =await axios.get("http://localhost:8080/v1/auth/generateproduct");
 console.log(res.data)
@@ -106,6 +106,8 @@ const fetchapi= async()=>{
 }
 
 useEffect(()=>{
+  addProductDetails('product123', 'Product details here').catch(console.error);
+
  fetchapi();
 },[])
 
